@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "user": "ts-node-dev --respawn controller/controller.user.ts",
+    "dev": "ts-node-dev --respawn domain/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,9 +15,11 @@
     "@types/node": "^22.7.4",
     "prisma": "^5.20.0",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "@prisma/client": "^5.20.0"
+    "@prisma/client": "^5.20.0",
+    "express": "^4.21.0"
   }
 }
