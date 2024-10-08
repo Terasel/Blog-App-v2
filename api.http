@@ -1,0 +1,35 @@
+POST http://localhost:3000/api/users HTTP/1.1
+content-type: application/json
+
+{
+  "email": "tropo@hotmail.com",
+  "name": "Tiny Tim",
+  "role": "simpleUser"
+}
+
+###
+
+POST http://localhost:3000/api/blog HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Toto",
+  "authorId": 1 
+}
+
+###
+
+GET http://localhost:3000/api/users
+
+###
+
+GET http://localhost:3000/api/blog
+
+###
+
+PUT http://localhost:3000/api/blog/2 HTTP/1.1
+content-type: application/json
+
+{
+  "title": "To rule them all"
+}

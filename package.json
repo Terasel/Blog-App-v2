@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "user": "ts-node-dev --respawn controller/controller.user.ts",
     "dev": "ts-node-dev --respawn domain/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +19,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "@types/express": "^5.0.0",
     "express": "^4.21.0"
   }
 }
