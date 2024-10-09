@@ -13,8 +13,9 @@ POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
-  "title": "Toto",
-  "authorId": 1 
+
+"title": "Hope it works"
+
 }
 
 ###
@@ -31,5 +32,27 @@ PUT http://localhost:3000/api/blog/2 HTTP/1.1
 content-type: application/json
 
 {
-  "title": "To rule them all"
+  "title": "To rule them all",
+  "authorId": 2
 }
+
+###
+
+DELETE http://localhost:3000/api/blog/7
+
+###
+
+GET http://localhost:3000/api/blog/7
+
+###
+
+PATCH http://localhost:3000/api/blog/7/recover 
+
+###
+
+PATCH http://localhost:3000/api/blog/1/liked
+
+###
+
+PATCH http://localhost:3000/api/blog/1/disliked
+
