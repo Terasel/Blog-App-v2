@@ -2,9 +2,9 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "tropo@hotmail.com",
+  "email": "livininthesunshine@hotmail.com",
   "name": "Tiny Tim",
-  "role": "simpleUser"
+  "role": "admin"
 }
 
 ###
@@ -14,7 +14,8 @@ content-type: application/json
 
 {
 
-"title": "Hope it works"
+"title": "and in the darkness bind them",
+"authorId": 3
 
 }
 
@@ -32,8 +33,7 @@ PUT http://localhost:3000/api/blog/2 HTTP/1.1
 content-type: application/json
 
 {
-  "title": "To rule them all",
-  "authorId": 2
+  "title": "and in the darkness bind them?"
 }
 
 ###
@@ -56,3 +56,23 @@ PATCH http://localhost:3000/api/blog/1/liked
 
 PATCH http://localhost:3000/api/blog/1/disliked
 
+###
+
+GET http://localhost:3000/api/blog/1/byauthor
+
+###
+
+PUT http://localhost:3000/api/users/3 HTTP/1.1
+content-type: application/json
+
+{
+  "name": "Big Sam"
+}
+
+###
+
+PATCH http://localhost:3000/api/users/1/ban
+
+###
+
+PATCH http://localhost:3000/api/users/1/unban
