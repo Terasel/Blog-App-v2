@@ -3,7 +3,7 @@ import express from 'express'
 import userController from '../controller/user.controller'
 import blogController from '../controller/blog.controller'
 
-const app = express()
+export const app = express()
 
 app.use(express.json())
 

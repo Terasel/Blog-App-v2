@@ -42,7 +42,7 @@ DELETE http://localhost:3000/api/blog/7
 
 ###
 
-GET http://localhost:3000/api/blog/7
+GET http://localhost:3000/api/blog/1
 
 ###
 
@@ -52,9 +52,6 @@ PATCH http://localhost:3000/api/blog/7/recover
 
 PATCH http://localhost:3000/api/blog/1/liked
 
-###
-
-PATCH http://localhost:3000/api/blog/1/disliked
 
 ###
 

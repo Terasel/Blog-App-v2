@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `blog` ADD COLUMN `likeCounter` INTEGER NOT NULL DEFAULT 0;

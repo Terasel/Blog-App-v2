@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../infrastructure/dbconnection"
+import { blogs } from "../infrastructure/blog.services"
 
 const router = Router();
 
@@ -12,41 +13,37 @@ router.post('/blog', async (req, res) => {
         if (!newBlog) throw 'Not created'
         res.status(201).send(newBlog)
     } catch (err) {
-        if (err = 'Not created') res.status(422).send('This blog could not be created')
+        if (err = 'Not created') res.status(400).send('This blog could not be created')
     }
 })
 
 router.patch('/blog/:id/liked', async (req, res) => {
     try {
-        const blogLike = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: {
-                liked: true
-            }
-        })
-        if (!blogLike) throw 'Empty'
-        res.status(200).send(blogLike)
-    } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
-    }
-})
-
-router.patch('/blog/:id/disliked', async (req, res) => {
-    try {
-        const blogDislike = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: {
-                liked: false
-            }
-        })
-        if (!blogDislike) throw 'Empty'
-        res.status(200).send(blogDislike)
-    } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        try {
+            const blogLike = await prisma.blog.update({
+                where: {
+                    id: +req.params.id,
+                    liked: false
+                },
+                data: {
+                    liked: true,
+                },
+            });
+            res.status(200).send(blogLike);
+        } catch {
+            const blogLike = await prisma.blog.update({
+                where: {
+                    id: +req.params.id,
+                    liked: true
+                },
+                data: {
+                    liked: false,
+                },
+            });
+            res.status(200).send(blogLike);
+        }
+    } catch (error) {
+        res.status(400).send("This blog's liked status could not be updated");
     }
 })
 
@@ -60,7 +57,7 @@ router.get('/blog', async (req, res) => {
         if (!blogs) throw 'Empty'
         res.status(200).send(blogs)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('There are no blogs')
+        if (err = 'Empty') res.status(404).send('No blogs could be found')
     }
 })
 
@@ -74,7 +71,7 @@ router.get('/blog/:id', async (req, res) => {
         if (!specificBlog) throw 'Empty'
         res.status(200).send(specificBlog)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        if (err = 'Empty') res.status(404).send('This blog could not be found')
     }
 })
 
@@ -88,7 +85,7 @@ router.get('/blog/:authorId/byauthor', async (req, res) => {
         if (!authorBlogs) throw 'Empty'
         res.status(200).send(authorBlogs)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        if (err = 'Empty') res.status(404).send('This blog could not be found')
     }
 })
 
@@ -105,7 +102,7 @@ router.delete('/blog/:id', async (req, res) => {
         if (!blogDelete) throw 'Empty'
         res.status(204).send(blogDelete)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        if (err = 'Empty') res.status(400).send('This blog could not be deleted')
     }
 })
 
@@ -120,7 +117,7 @@ router.put('/blog/:id', async (req, res) => {
         if (!blogUpdate) throw 'Empty'
         res.status(200).send(blogUpdate)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
 })
 
@@ -137,7 +134,7 @@ router.patch('/blog/:id/recover', async (req, res) => {
         if (!blogRecover) throw 'Empty'
         res.status(200).send(blogRecover)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog does not exist')
+        if (err = 'Empty') res.status(400).send('This blog could not be recovered')
     }
 })
 
