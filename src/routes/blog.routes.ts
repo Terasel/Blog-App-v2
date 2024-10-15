@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { prisma } from "../infrastructure/dbconnection"
 import { createBlog, likeBlog, getBlogs, getBlog, getBlogsByAuthor, deleteBlog, updateBlog, recoverBlog, actuallyDeleteBlog, increaseCounter } from '../controller/blog.controller'
 
 const router = Router();
