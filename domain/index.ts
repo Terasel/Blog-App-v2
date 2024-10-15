@@ -1,7 +1,7 @@
 import express from 'express'
 
-import userController from '../controller/user.controller'
-import blogController from '../controller/blog.controller'
+import userController from '../routes/user.routes'
+import blogController from '../routes/blog.routes'
 
 export const app = express()
 

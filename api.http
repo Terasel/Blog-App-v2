@@ -73,3 +73,11 @@ PATCH http://localhost:3000/api/users/1/ban
 ###
 
 PATCH http://localhost:3000/api/users/1/unban
+
+###
+
+PATCH http://localhost:3000/api/blog/1/counter
+
+###
+
+DELETE http://localhost:3000/api/blog/9/final
