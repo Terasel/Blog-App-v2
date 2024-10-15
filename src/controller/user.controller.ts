@@ -1,13 +1,19 @@
-import { Router } from "express";
 import { prisma } from "../infrastructure/dbconnection"
-import { createUser } from '../controller/user.controller'
+import { Request, Response } from 'express';
 
-const router = Router();
+export const createUser = async (req: Request, res: Response) => {
+    try {
+        const newUser = await prisma.user.create({
+            data: req.body,
+        })
+        if (!newUser) throw 'Not created'
+        res.status(201).send(newUser)
+    } catch (err) {
+        if (err = 'Not created') res.status(422).send('This user could not be created')
+    }
+}
 
-// simpleUser
-router.post('/users', createUser)
-
-router.put('/users/:id', async (req, res) => {
+export const updateUser = async (req: Request, res: Response) => {
     try {
         const userUpdate = await prisma.user.update({
             where: {
@@ -20,11 +26,9 @@ router.put('/users/:id', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(400).send('This user could not be updated')
     }
-})
+}
 
-//admin
-
-router.get('/users', async (req, res) => {
+export const getUsers = async (req: Request, res: Response) => {
     try {
         const users = await prisma.user.findMany({})
         if (!users) throw 'No users'
@@ -32,9 +36,9 @@ router.get('/users', async (req, res) => {
     } catch (err) {
         if (err = 'No users') res.status(404).send('No users could be found')
     }
-})
+}
 
-router.patch('/users/:id/ban', async (req, res) => {
+export const banUser = async (req: Request, res: Response) => {
     try {
         try {
             const userBan = await prisma.user.update({
@@ -65,6 +69,4 @@ router.patch('/users/:id/ban', async (req, res) => {
         if (err = 'Empty') res.status(400).send('This user could not be banned')
     }
 
-})
-
-export default router;
+}
