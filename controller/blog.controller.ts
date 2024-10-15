@@ -1,11 +1,7 @@
-import { Router } from "express";
 import { prisma } from "../infrastructure/dbconnection"
-import { blogs } from "../infrastructure/blog.services"
+import { Request, Response } from 'express';
 
-const router = Router();
-
-// simpleUser
-router.post('/blog', async (req, res) => {
+export const createBlog = async (req: Request, res: Response) => {
     try {
         const newBlog = await prisma.blog.create({
             data: req.body
@@ -15,9 +11,9 @@ router.post('/blog', async (req, res) => {
     } catch (err) {
         if (err = 'Not created') res.status(400).send('This blog could not be created')
     }
-})
+}
 
-router.patch('/blog/:id/liked', async (req, res) => {
+export const likeBlog = async (req: Request, res: Response) => {
     try {
         try {
             const blogLike = await prisma.blog.update({
@@ -27,8 +23,12 @@ router.patch('/blog/:id/liked', async (req, res) => {
                 },
                 data: {
                     liked: true,
+                    likeCounter: {
+                        increment: 1
+                    }
                 },
             });
+            if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         } catch {
             const blogLike = await prisma.blog.update({
@@ -38,16 +38,20 @@ router.patch('/blog/:id/liked', async (req, res) => {
                 },
                 data: {
                     liked: false,
+                    likeCounter: {
+                        increment: -1
+                    }
                 },
             });
+            if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         }
-    } catch (error) {
-        res.status(400).send("This blog's liked status could not be updated");
+    } catch (err) {
+        if (err = 'Empty') res.status(400).send("This blog's liked status could not be updated");
     }
-})
+}
 
-router.get('/blog', async (req, res) => {
+export const getBlogs = async (req: Request, res: Response) => {
     try {
         const blogs = await prisma.blog.findMany({
             where: {
@@ -59,9 +63,9 @@ router.get('/blog', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(404).send('No blogs could be found')
     }
-})
+}
 
-router.get('/blog/:id', async (req, res) => {
+export const getBlog = async (req: Request, res: Response) => {
     try {
         const specificBlog = await prisma.blog.findFirst({
             where: {
@@ -73,9 +77,9 @@ router.get('/blog/:id', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(404).send('This blog could not be found')
     }
-})
+}
 
-router.get('/blog/:authorId/byauthor', async (req, res) => {
+export const getBlogsByAuthor = async (req: Request, res: Response) => {
     try {
         const authorBlogs = await prisma.blog.findMany({
             where: {
@@ -87,9 +91,9 @@ router.get('/blog/:authorId/byauthor', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(404).send('This blog could not be found')
     }
-})
+}
 
-router.delete('/blog/:id', async (req, res) => {
+export const deleteBlog = async (req: Request, res: Response) => {
     try {
         const blogDelete = await prisma.blog.update({
             where: {
@@ -104,9 +108,9 @@ router.delete('/blog/:id', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(400).send('This blog could not be deleted')
     }
-})
+}
 
-router.put('/blog/:id', async (req, res) => {
+export const updateBlog = async (req: Request, res: Response) => {
     try {
         const blogUpdate = await prisma.blog.update({
             where: {
@@ -119,9 +123,9 @@ router.put('/blog/:id', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
-})
+}
 
-router.patch('/blog/:id/recover', async (req, res) => {
+export const recoverBlog = async (req: Request, res: Response) => {
     try {
         const blogRecover = await prisma.blog.update({
             where: {
@@ -136,7 +140,37 @@ router.patch('/blog/:id/recover', async (req, res) => {
     } catch (err) {
         if (err = 'Empty') res.status(400).send('This blog could not be recovered')
     }
-})
+}
 
-// admin
-export default router
+export const actuallyDeleteBlog = async (req: Request, res: Response) => {
+    try {
+        const blogFinalDelete = await prisma.blog.delete({
+            where: {
+                id: +req.params.id
+            }
+        })
+        if (!blogFinalDelete) throw 'Undeletable'
+        res.status(204).send(blogFinalDelete)
+    } catch (err) {
+        if (err = 'Undeletable') res.status(400).send('This blog could not be completely deleted')
+    }
+}
+
+export const increaseCounter = async (req: Request, res: Response) => {
+    try {
+        const blogCounter = await prisma.blog.update({
+            where: {
+                id: +req.params.id
+            },
+            data: {
+                likeCounter: {
+                    increment: 1
+                }
+            }
+        })
+        if (!blogCounter) throw 'Empty'
+        res.status(200).send(blogCounter)
+    } catch (err) {
+        if (err = 'Empty') res.status(400).send('This blog could not be updated')
+    }
+}
