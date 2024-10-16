@@ -174,3 +174,13 @@ export const increaseCounter = async (req: Request, res: Response) => {
         if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
 }
+
+export const deleteAllBlogs = async (req: Request, res: Response) => {
+    try {
+        const blogDelete = await prisma.blog.deleteMany({})
+        if (!blogDelete) throw 'Undeletable'
+        res.status(204).send(blogDelete)
+    } catch (err) {
+        if (err = 'Undeletable') res.status(400).send('The blog could not be deleted')
+    }
+}

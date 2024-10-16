@@ -1,24 +1,24 @@
-import { Router } from "express";
-import { createBlog, likeBlog, getBlogs, getBlog, getBlogsByAuthor, deleteBlog, updateBlog, recoverBlog, actuallyDeleteBlog, increaseCounter } from '../controller/blog.controller'
-
+import { Router } from "express"
+import * as blogServices from '../controller/blog.controller'
 const router = Router();
 
 // simpleUser
-router.post('/blog', createBlog)
-router.patch('/blog/:id/liked', likeBlog)
-router.get('/blog', getBlogs)
-router.get('/blog/:id', getBlog)
-router.get('/blog/:authorId/byauthor', getBlogsByAuthor)
-router.delete('/blog/:id', deleteBlog)
-router.put('/blog/:id', updateBlog)
-router.patch('/blog/:id/recover', recoverBlog)
+router.post('/blog', blogServices.createBlog)
+router.patch('/blog/:id/liked', blogServices.likeBlog)
+router.get('/blog', blogServices.getBlogs)
+router.get('/blog/:id', blogServices.getBlog)
+router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
+router.delete('/blog/:id', blogServices.deleteBlog)
+router.put('/blog/:id', blogServices.updateBlog)
+router.patch('/blog/:id/recover', blogServices.recoverBlog)
 
 // admin
 
-router.delete('/blog/:id/final', actuallyDeleteBlog)
+router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
 
 // dev
 
-router.patch('/blog/:id/counter', increaseCounter)
+router.patch('/blog/:id/counter', blogServices.increaseCounter)
+router.delete('/blog', blogServices.deleteAllBlogs)
 
 export default router

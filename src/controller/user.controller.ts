@@ -70,3 +70,13 @@ export const banUser = async (req: Request, res: Response) => {
     }
 
 }
+
+export const deleteAllUsers = async (req: Request, res: Response) => {
+    try {
+        const usersDelete = await prisma.user.deleteMany({})
+        if (!usersDelete) throw 'Undeletable'
+        res.status(204).send(usersDelete)
+    } catch (err) {
+        if (err = 'Undeletable') res.status(400).send('The users could not be deleted')
+    }
+}

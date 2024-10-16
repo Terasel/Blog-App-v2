@@ -2,8 +2,8 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine@hotmail.com",
-  "name": "Tiny Tim",
+  "email": "livininthesunshine25@hotmail.com",
+  "name": "Tiny Tim22",
   "role": "admin"
 }
 
@@ -14,8 +14,8 @@ content-type: application/json
 
 {
 
-"title": "and in the darkness bind them",
-"authorId": 3
+"title": "in the land of Mordor",
+"authorId": 131
 
 }
 
@@ -59,10 +59,11 @@ GET http://localhost:3000/api/blog/1/byauthor
 
 ###
 
-PUT http://localhost:3000/api/users/3 HTTP/1.1
+PUT http://localhost:3000/api/users/48 HTTP/1.1
 content-type: application/json
 
 {
+  "email":"toto67@gmail.com",
   "name": "Big Sam"
 }
 
@@ -81,3 +82,9 @@ PATCH http://localhost:3000/api/blog/1/counter
 ###
 
 DELETE http://localhost:3000/api/blog/9/final
+
+###
+DELETE http://localhost:3000/api/blog
+
+###
+DELETE http://localhost:3000/api/users

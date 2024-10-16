@@ -1,15 +1,19 @@
-import { Router } from "express";
-import { createUser, updateUser, getUsers, banUser } from '../controller/user.controller'
+import { Router } from "express"
+import * as userServices from '../controller/user.controller'
 
 const router = Router();
 
 // simpleUser
-router.post('/users', createUser)
-router.put('/users/:id', updateUser)
+router.post('/users', userServices.createUser)
+router.put('/users/:id', userServices.updateUser)
 
 //admin
 
-router.get('/users', getUsers)
-router.patch('/users/:id/ban', banUser)
+router.get('/users', userServices.getUsers)
+router.patch('/users/:id/ban', userServices.banUser)
+
+//dev
+
+router.delete('/users', userServices.deleteAllUsers)
 
 export default router;

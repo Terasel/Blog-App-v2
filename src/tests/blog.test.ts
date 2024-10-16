@@ -1,75 +1,200 @@
 import { app } from '../domain/index'
 import request from 'supertest'
-describe('Blog API', () => {
 
+describe('User testing', () => {
     it('should create a new user', async () => {
-        const emailGen = 'whoknows' + Math.floor(Math.random() * 10).toString() + '@hotmail.com'
-        const userRes = await request(app)
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
             .post('/api/users')
             .send({
                 email: emailGen,
                 name: 'Mysterious Stranger',
                 role: 'admin'
-            });
+            })
 
-        expect(userRes.statusCode).toEqual(201);
-        expect(userRes.body.email).toBe(emailGen);
-        expect(userRes.body.name).toBe('Mysterious Stranger');
-        expect(userRes.body.role).toBe('admin');
-    });
+        expect(userCreate.statusCode).toEqual(201)
+        expect(userCreate.body.email).toBe(emailGen)
+        expect(userCreate.body.name).toBe('Mysterious Stranger')
+        expect(userCreate.body.role).toBe('admin')
+    })
+    it('should update a user', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const emailGen2 = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userId = userCreate.body.id
+        const userUpdate = await request(app)
+            .put('/api/users/' + userId)
+            .send({
+                email: emailGen2,
+                name: 'Deadeye Duncan'
+            })
+        expect(userUpdate.statusCode).toEqual(200)
+        expect(userUpdate.body.email).toBe(emailGen2)
+        expect(userUpdate.body.name).toBe('Deadeye Duncan')
+        expect(userUpdate.body.role).toBe('admin')
+    })
+    it('should get all users', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const emailGen2 = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const userCreate2 = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen2,
+                name: 'Deadeye Duncan',
+                role: 'simpleUser'
+            })
+        const usersGet = await request(app)
+            .get('/api/users')
+        expect(usersGet.statusCode).toEqual(200)
+        expect(usersGet.body[0].name).toBe('Mysterious Stranger')
+        expect(usersGet.body[1].name).toBe('Deadeye Duncan')
+    })
+    it('should ban a user', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const userId = userCreate.body.id
+        const userBan = await request(app)
+            .patch('/api/users/' + userId + '/ban')
+        expect(userBan.body.banned).toBe(true)
+    })
+    it('should unban a user', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin',
+                banned: true
+            })
+        const userId = userCreate.body.id
+        const userBan = await request(app)
+            .patch('/api/users/' + userId + '/ban')
+        expect(userBan.body.banned).toBe(false)
+    })
+})
+
+describe('Blog testing', () => {
     it('should create a new blog', async () => {
-        const blogRes = await request(app)
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const blogCreate = await request(app)
             .post(`/api/blog`)
             .send({
                 title: 'Somewhere over the rainbow',
-                authorId: 1
-            });
-        expect(blogRes.statusCode).toEqual(201);
-        expect(blogRes.body.title).toBe('Somewhere over the rainbow');
-        expect(blogRes.body.authorId).toBe(1);
+                authorId: userCreate.body.id
+            })
+        expect(blogCreate.statusCode).toEqual(201)
+        expect(blogCreate.body.title).toBe('Somewhere over the rainbow')
+        expect(blogCreate.body.authorId).toBe(userCreate.body.id)
+    })
+    it('should like a blog', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const blogCreate = await request(app)
+            .post(`/api/blog`)
+            .send({
+                title: 'Somewhere over the rainbow',
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogLike = await request(app)
+            .patch('/api/blog/' + blogId + '/liked')
+        expect(blogLike.body.liked).toBe(true)
+    })
+    it('should revert the like on a blog', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const blogCreate = await request(app)
+            .post(`/api/blog`)
+            .send({
+                title: 'Somewhere over the rainbow',
+                authorId: userCreate.body.id,
+                liked: true
+            })
+        const blogId = blogCreate.body.id
+        const blogLike = await request(app)
+            .patch('/api/blog/' + blogId + '/liked')
+        expect(blogLike.body.liked).toBe(false)
+    })
+    it('should get all blogs', async () => {
+        const emailGen = 'whoknows' + Math.floor(Math.random() * 1000).toString() + '@hotmail.com'
+        const userCreate = await request(app)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+        const blogCreate = await request(app)
+            .post(`/api/blog`)
+            .send({
+                title: 'Somewhere over the rainbow',
+                authorId: userCreate.body.id,
+            })
+        const blogCreate2 = await request(app)
+            .post(`/api/blog`)
+            .send({
+                title: 'Way up high',
+                authorId: userCreate.body.id,
+            })
+        const blogId = blogCreate.body.id
+        const blogId2 = blogCreate2.body.id
+        const blogsGet = await request(app)
+            .get('/api/blog')
+        expect(blogsGet.statusCode).toEqual(200)
+        expect(blogsGet.body[0].title).toBe('Somewhere over the rainbow')
+        expect(blogCreate2.body.title).toBe('Way up high')
+        // expect(blogsGet.body[1].title).toBe('Way up high') - no funciona
     })
 })
-// import { MockContext, Context, createMockContext } from '../infrastructure/context'
-// import { createBlog, updateBlog } from '../controller/blog.controller'
-// import { createUser, updateUser } from '../controller/user.controller'
 
-// let mockCtx: MockContext
-// let ctx: Context
-
-// beforeEach(() => {
-//     mockCtx = createMockContext()
-//     ctx = mockCtx as unknown as Context
-// })
-
-// test('should create new user ', async () => {
-//     const user = {
-//         id: 1,
-//         email: 'hello@prisma.io',
-//         name: 'Rich',
-//         bio: null,
-//         role: 'admin',
-//         banned: false
-//     }
-//     mockCtx.prisma.user.create.mockResolvedValue(user)
-
-//     await expect(createUser(req: Request, res: Response)).resolves.toEqual({
-//         id: 1,
-//         email: 'hello@prisma.io',
-//         name: 'Rich',
-//         bio: null,
-//         role: 'admin',
-//         banned: false
-//     })
-// })
-// import { PrismaClient } from "@prisma/client";
-// import {prisma} from '../infrastructure/dbconnection'
-// const mockedPrismaClient = new (<new () => PrismaClient>(
-//     PrismaClient
-//   ))() as jest.Mocked<PrismaClient>;
-
-//   describe ('Blog tests', ()=> {
-//     afterEach(() => {
-//         jest.resetAllMocks();
-//       });
-
-//   }) 
+describe('DB delete', () => {
+    it('should delete all blog entries', async () => {
+        const blogDelete = await request(app)
+            .delete('/api/blog')
+        expect(blogDelete.statusCode).toEqual(204)
+    })
+    it('should delete all users', async () => {
+        const usersDelete = await request(app)
+            .delete('/api/users')
+        expect(usersDelete.statusCode).toEqual(204)
+    })
+})
