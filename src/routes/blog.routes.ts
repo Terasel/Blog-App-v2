@@ -11,6 +11,8 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
 router.delete('/blog/:id', blogServices.deleteBlog)
 router.put('/blog/:id', blogServices.updateBlog)
 router.patch('/blog/:id/recover', blogServices.recoverBlog)
+router.get('/blog/:id/popularity', blogServices.popularityScore)
+router.get('/blog/testing', blogServices.testing)
 
 // admin
 

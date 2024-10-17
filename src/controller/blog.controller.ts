@@ -1,3 +1,4 @@
+import { notNull } from "jest-mock-extended";
 import { prisma } from "../infrastructure/dbconnection"
 import { Request, Response } from 'express';
 
@@ -175,6 +176,26 @@ export const increaseCounter = async (req: Request, res: Response) => {
     }
 }
 
+export const popularityScore = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({})
+        const usersLength = users.length
+        const specificBlog = await prisma.blog.findFirst({
+            where: {
+                id: +req.params.id
+            }
+        })
+        const likes = specificBlog!.likeCounter
+        const popularity = (likes / (usersLength - 1)) * 100
+        if (!users) throw 'No users'
+        if (!specificBlog) throw 'No blog'
+        res.status(200).send(popularity + '%')
+    } catch (err) {
+        if (err = 'No users') res.status(404).send('No users could be found')
+        if (err = 'No blog') res.status(404).send('This blog could not be found')
+    }
+}
+
 export const deleteAllBlogs = async (req: Request, res: Response) => {
     try {
         const blogDelete = await prisma.blog.deleteMany({})
@@ -182,5 +203,19 @@ export const deleteAllBlogs = async (req: Request, res: Response) => {
         res.status(204).send(blogDelete)
     } catch (err) {
         if (err = 'Undeletable') res.status(400).send('The blog could not be deleted')
+    }
+}
+
+export const testing = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            take: 1,
+            orderBy: {
+                id: 'desc',
+            },
+        })
+        res.status(200).send(users)
+    } catch (err) {
+        res.status(400).send('The testing did not work')
     }
 }

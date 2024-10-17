@@ -2,7 +2,7 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine25@hotmail.com",
+  "email": "livininthesunshine28@hotmail.com",
   "name": "Tiny Tim22",
   "role": "admin"
 }
@@ -15,7 +15,7 @@ content-type: application/json
 {
 
 "title": "in the land of Mordor",
-"authorId": 131
+"authorId": 1
 
 }
 
@@ -88,3 +88,39 @@ DELETE http://localhost:3000/api/blog
 
 ###
 DELETE http://localhost:3000/api/users
+
+###
+DELETE http://localhost:3020/api/blog
+
+###
+DELETE http://localhost:3020/api/users
+
+###
+DELETE http://localhost:3010/api/blog
+
+###
+DELETE http://localhost:3010/api/users
+
+###
+
+GET http://localhost:3020/api/users
+
+###
+
+GET http://localhost:3020/api/blog
+
+###
+
+GET http://localhost:3010/api/users
+
+###
+
+GET http://localhost:3010/api/blog
+
+###
+
+GET http://localhost:3000/api/blog/1/popularity
+
+###
+
+GET http://localhost:3000/api/blog/testing
