@@ -1,4 +1,3 @@
-import { notNull } from "jest-mock-extended";
 import { prisma } from "../infrastructure/dbconnection"
 import { Request, Response } from 'express';
 
@@ -10,7 +9,7 @@ export const createBlog = async (req: Request, res: Response) => {
         if (!newBlog) throw 'Not created'
         res.status(201).send(newBlog)
     } catch (err) {
-        if (err = 'Not created') res.status(400).send('This blog could not be created')
+        if (err = 'Not created') res.status(422).send('This blog could not be created')
     }
 }
 
@@ -57,6 +56,9 @@ export const getBlogs = async (req: Request, res: Response) => {
         const blogs = await prisma.blog.findMany({
             where: {
                 deleted: false
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
         if (!blogs) throw 'Empty'
@@ -90,7 +92,8 @@ export const getBlogsByAuthor = async (req: Request, res: Response) => {
         if (!authorBlogs) throw 'Empty'
         res.status(200).send(authorBlogs)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('This blog could not be found')
+        if (err = 'Empty') res.status(404).send('No blogs from this author could be found')
+        if (err = 'No blogs') res.status(404).send('This author has no blogs')
     }
 }
 
@@ -111,21 +114,6 @@ export const deleteBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const updateBlog = async (req: Request, res: Response) => {
-    try {
-        const blogUpdate = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: req.body
-        })
-        if (!blogUpdate) throw 'Empty'
-        res.status(200).send(blogUpdate)
-    } catch (err) {
-        if (err = 'Empty') res.status(400).send('This blog could not be updated')
-    }
-}
-
 export const recoverBlog = async (req: Request, res: Response) => {
     try {
         const blogRecover = await prisma.blog.update({
@@ -143,6 +131,21 @@ export const recoverBlog = async (req: Request, res: Response) => {
     }
 }
 
+export const updateBlog = async (req: Request, res: Response) => {
+    try {
+        const blogUpdate = await prisma.blog.update({
+            where: {
+                id: +req.params.id
+            },
+            data: req.body
+        })
+        if (!blogUpdate) throw 'Empty'
+        res.status(200).send(blogUpdate)
+    } catch (err) {
+        if (err = 'Empty') res.status(400).send('This blog could not be updated')
+    }
+}
+
 export const actuallyDeleteBlog = async (req: Request, res: Response) => {
     try {
         const blogFinalDelete = await prisma.blog.delete({
@@ -154,25 +157,6 @@ export const actuallyDeleteBlog = async (req: Request, res: Response) => {
         res.status(204).send(blogFinalDelete)
     } catch (err) {
         if (err = 'Undeletable') res.status(400).send('This blog could not be completely deleted')
-    }
-}
-
-export const increaseCounter = async (req: Request, res: Response) => {
-    try {
-        const blogCounter = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: {
-                likeCounter: {
-                    increment: 1
-                }
-            }
-        })
-        if (!blogCounter) throw 'Empty'
-        res.status(200).send(blogCounter)
-    } catch (err) {
-        if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
 }
 
@@ -193,6 +177,25 @@ export const popularityScore = async (req: Request, res: Response) => {
     } catch (err) {
         if (err = 'No users') res.status(404).send('No users could be found')
         if (err = 'No blog') res.status(404).send('This blog could not be found')
+    }
+}
+// - - - - - - - -
+export const increaseCounter = async (req: Request, res: Response) => {
+    try {
+        const blogCounter = await prisma.blog.update({
+            where: {
+                id: +req.params.id
+            },
+            data: {
+                likeCounter: {
+                    increment: 1
+                }
+            }
+        })
+        if (!blogCounter) throw 'Empty'
+        res.status(200).send(blogCounter)
+    } catch (err) {
+        if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
 }
 

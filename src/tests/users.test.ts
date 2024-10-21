@@ -20,6 +20,17 @@ describe('User testing', () => {
         expect(userCreate.body.name).toBe('Mysterious Stranger')
         expect(userCreate.body.role).toBe('admin')
     })
+    it('should not create a new user without the necessary info', async () => {
+        const userCreate = await request(userServer)
+            .post('/api/users')
+            .send({
+                name: 'Mysterious Stranger',
+                role: 'admin'
+            })
+
+        expect(userCreate.statusCode).toEqual(422)
+        expect(userCreate.text).toBe('This user could not be created')
+    })
     it('should update a user', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
@@ -46,6 +57,30 @@ describe('User testing', () => {
         expect(userUpdate.body.name).toBe('Deadeye Duncan')
         expect(userUpdate.body.role).toBe('admin')
     })
+    it('should not update a user that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(userServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Juhani',
+                role: 'admin'
+            })
+        const randomString2 = new RandomString();
+        const rand2 = randomString2.generate();
+        const emailGen2 = 'whoknows' + rand2 + '@hotmail.com'
+        const userId = userCreate.body.id
+        const userUpdate = await request(userServer)
+            .put('/api/users/' + (userId + 55))
+            .send({
+                email: emailGen2,
+                name: 'Juhani?'
+            })
+        expect(userUpdate.statusCode).toEqual(400)
+        expect(userUpdate.text).toBe('This user could not be updated')
+    })
     it('should get all users', async () => {
         const usersGet = await request(userServer)
             .get('/api/users')
@@ -67,7 +102,25 @@ describe('User testing', () => {
         const userId = userCreate.body.id
         const userBan = await request(userServer)
             .patch('/api/users/' + userId + '/ban')
+        expect(userBan.statusCode).toEqual(200)
         expect(userBan.body.banned).toBe(true)
+    })
+    it('should not ban a user that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(userServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Theron Shan',
+                role: 'admin'
+            })
+        const userId = userCreate.body.id
+        const userBan = await request(userServer)
+            .patch('/api/users/' + (userId + 55) + '/ban')
+        expect(userBan.statusCode).toEqual(400)
+        expect(userBan.text).toBe('This user could not be banned/unbanned')
     })
     it('should unban a user', async () => {
         const randomString = new RandomString();
@@ -84,7 +137,26 @@ describe('User testing', () => {
         const userId = userCreate.body.id
         const userBan = await request(userServer)
             .patch('/api/users/' + userId + '/ban')
+        expect(userBan.statusCode).toEqual(200)
         expect(userBan.body.banned).toBe(false)
+    })
+    it('should not unban a user that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(userServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Lana Beniko',
+                role: 'admin',
+                banned: true
+            })
+        const userId = userCreate.body.id
+        const userBan = await request(userServer)
+            .patch('/api/users/' + (userId + 55) + '/ban')
+        expect(userBan.statusCode).toEqual(400)
+        expect(userBan.text).toBe('This user could not be banned/unbanned')
     })
 })
 

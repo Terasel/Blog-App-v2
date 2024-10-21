@@ -66,11 +66,11 @@ export const banUser = async (req: Request, res: Response) => {
             res.status(200).send(userBan)
         }
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This user could not be banned')
+        if (err = 'Empty') res.status(400).send('This user could not be banned/unbanned')
     }
 
 }
-
+// - - - - - - - -
 export const deleteAllUsers = async (req: Request, res: Response) => {
     try {
         const usersDelete = await prisma.user.deleteMany({})
