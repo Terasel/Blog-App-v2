@@ -1,4 +1,5 @@
 import { blogServer } from '../domain/blogTestingServer'
+import { userServer } from '../domain/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
@@ -305,6 +306,30 @@ describe('Blog testing', () => {
         expect(blogRecover.body.title).toBe("Really do come true")
         expect(blogRecover.body.deleted).toBe(false)
     })
+    it('should not recover a deleted blog that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Master Kaedan',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Really do come true?",
+                authorId: userCreate.body.id,
+                deleted: true
+            })
+        const blogId = blogCreate.body.id
+        const blogRecover = await request(blogServer)
+            .patch('/api/blog/' + (blogId + 55) + '/recover')
+        expect(blogRecover.statusCode).toEqual(400)
+        expect(blogRecover.text).toBe('This blog could not be recovered')
+    })
     it('should update a blog', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
@@ -334,6 +359,34 @@ describe('Blog testing', () => {
         expect(blogUpdate.body.title).toBe("Really do come true?")
         expect(blogUpdate.body.content).toBe('En un rincón de la Mancha de cuyo nombre no quiero acordarme...')
     })
+    it('should not update a blog that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Darth Ravage',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Really do come true?",
+                authorId: userCreate.body.id,
+                deleted: true
+            })
+        const blogId = blogCreate.body.id
+        const blogUpdate = await request(blogServer)
+            .put('/api/blog/' + (blogId + 55))
+            .send({
+                title: "Really do come true?",
+                content: 'Vivía un caballero hidalgo'
+            })
+        expect(blogUpdate.statusCode).toEqual(400)
+        expect(blogUpdate.text).toBe('This blog could not be updated')
+    })
     it('should irreversibly delete a specific blog', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
@@ -359,11 +412,94 @@ describe('Blog testing', () => {
         expect(blogDelete.statusCode).toEqual(204)
         expect(blogGet.statusCode).toEqual(404)
     })
+    it('should not irreversibly delete a specific blog that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Visquis',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Someday I'll wish upon a star?",
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogDelete = await request(blogServer)
+            .delete('/api/blog/' + (blogId + 55) + '/final')
+        expect(blogDelete.statusCode).toEqual(400)
+        expect(blogDelete.text).toBe('This blog could not be completely deleted')
+    })
+    it('should display the popularity of a specific blog', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Darth Ravage',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "And wake up where the clouds are far behind me",
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogLike = await request(blogServer)
+            .patch('/api/blog/' + blogId + '/liked')
+        const blogPopularity = await request(blogServer)
+            .get('/api/blog/' + blogId + '/popularity')
+        const users = await request(userServer)
+            .get('/api/users')
+        const usersLength = users.body.length
+        const specificBlog = await request(blogServer)
+        .get('/api/blog/' + blogId)
+        const likes = specificBlog!.body.likeCounter
+        const popularity = (likes / (usersLength - 1)) * 100
+        expect(blogPopularity.statusCode).toEqual(200)
+        expect(blogPopularity.text).toBe(popularity + '%')
+    })
+    it('should not display the popularity of a blog that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Darth Ravage',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "And wake up where the clouds are far behind me",
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogLike = await request(blogServer)
+            .patch('/api/blog/' + blogId + '/liked')
+        const blogPopularity = await request(blogServer)
+            .get('/api/blog/' + (blogId + 55) + '/popularity')
+        expect(blogPopularity.statusCode).toEqual(404)
+        expect(blogPopularity.text).toBe('This blog could not be found')
+    })  
 })
+
+
 
 describe('DB delete', () => {
     afterAll(() => {
         blogServer.close()
+        userServer.close()
     })
     it('should delete all blog entries', async () => {
         const blogDelete = await request(blogServer)

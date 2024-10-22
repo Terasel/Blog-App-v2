@@ -171,11 +171,9 @@ export const popularityScore = async (req: Request, res: Response) => {
         })
         const likes = specificBlog!.likeCounter
         const popularity = (likes / (usersLength - 1)) * 100
-        if (!users) throw 'No users'
         if (!specificBlog) throw 'No blog'
         res.status(200).send(popularity + '%')
     } catch (err) {
-        if (err = 'No users') res.status(404).send('No users could be found')
         if (err = 'No blog') res.status(404).send('This blog could not be found')
     }
 }
