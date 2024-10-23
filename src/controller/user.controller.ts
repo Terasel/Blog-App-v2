@@ -1,7 +1,7 @@
-import { prisma } from "../infrastructure/dbconnection"
-import { Request, Response } from 'express';
+import { prisma } from "../database/dbconnection"
+import { Handler } from 'express';
 
-export const createUser = async (req: Request, res: Response) => {
+export const createUser: Handler = async (req, res) => {
     try {
         const newUser = await prisma.user.create({
             data: req.body,
@@ -13,7 +13,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 }
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser: Handler = async (req, res) => {
     try {
         const userUpdate = await prisma.user.update({
             where: {
@@ -28,7 +28,7 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 }
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers: Handler = async (req, res) => {
     try {
         const users = await prisma.user.findMany({})
         if (!users) throw 'No users'
@@ -38,7 +38,7 @@ export const getUsers = async (req: Request, res: Response) => {
     }
 }
 
-export const banUser = async (req: Request, res: Response) => {
+export const banUser: Handler = async (req, res) => {
     try {
         try {
             const userBan = await prisma.user.update({
@@ -71,7 +71,7 @@ export const banUser = async (req: Request, res: Response) => {
 
 }
 // - - - - - - - -
-export const deleteAllUsers = async (req: Request, res: Response) => {
+export const deleteAllUsers: Handler = async (req, res) => {
     try {
         const usersDelete = await prisma.user.deleteMany({})
         if (!usersDelete) throw 'Undeletable'

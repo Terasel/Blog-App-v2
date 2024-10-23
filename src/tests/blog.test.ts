@@ -1,5 +1,5 @@
-import { blogServer } from '../domain/blogTestingServer'
-import { userServer } from '../domain/usersTestingServer'
+import { blogServer } from '../server/blogTestingServer'
+import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
@@ -461,7 +461,7 @@ describe('Blog testing', () => {
             .get('/api/users')
         const usersLength = users.body.length
         const specificBlog = await request(blogServer)
-        .get('/api/blog/' + blogId)
+            .get('/api/blog/' + blogId)
         const likes = specificBlog!.body.likeCounter
         const popularity = (likes / (usersLength - 1)) * 100
         expect(blogPopularity.statusCode).toEqual(200)
@@ -491,7 +491,7 @@ describe('Blog testing', () => {
             .get('/api/blog/' + (blogId + 55) + '/popularity')
         expect(blogPopularity.statusCode).toEqual(404)
         expect(blogPopularity.text).toBe('This blog could not be found')
-    })  
+    })
 })
 
 

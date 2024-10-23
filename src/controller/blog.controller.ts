@@ -1,7 +1,7 @@
-import { prisma } from "../infrastructure/dbconnection"
-import { Request, Response } from 'express';
+import { prisma } from "../database/dbconnection"
+import { Handler } from 'express';
 
-export const createBlog = async (req: Request, res: Response) => {
+export const createBlog: Handler = async (req, res) => {
     try {
         const newBlog = await prisma.blog.create({
             data: req.body
@@ -13,7 +13,7 @@ export const createBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const likeBlog = async (req: Request, res: Response) => {
+export const likeBlog: Handler = async (req, res) => {
     try {
         try {
             const blogLike = await prisma.blog.update({
@@ -51,7 +51,7 @@ export const likeBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const getBlogs = async (req: Request, res: Response) => {
+export const getBlogs: Handler = async (req, res) => {
     try {
         const blogs = await prisma.blog.findMany({
             where: {
@@ -68,7 +68,7 @@ export const getBlogs = async (req: Request, res: Response) => {
     }
 }
 
-export const getBlog = async (req: Request, res: Response) => {
+export const getBlog: Handler = async (req, res) => {
     try {
         const specificBlog = await prisma.blog.findFirst({
             where: {
@@ -82,7 +82,7 @@ export const getBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const getBlogsByAuthor = async (req: Request, res: Response) => {
+export const getBlogsByAuthor: Handler = async (req, res) => {
     try {
         const authorBlogs = await prisma.blog.findMany({
             where: {
@@ -97,7 +97,7 @@ export const getBlogsByAuthor = async (req: Request, res: Response) => {
     }
 }
 
-export const deleteBlog = async (req: Request, res: Response) => {
+export const deleteBlog: Handler = async (req, res) => {
     try {
         const blogDelete = await prisma.blog.update({
             where: {
@@ -114,7 +114,7 @@ export const deleteBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const recoverBlog = async (req: Request, res: Response) => {
+export const recoverBlog: Handler = async (req, res) => {
     try {
         const blogRecover = await prisma.blog.update({
             where: {
@@ -131,7 +131,7 @@ export const recoverBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const updateBlog = async (req: Request, res: Response) => {
+export const updateBlog: Handler = async (req, res) => {
     try {
         const blogUpdate = await prisma.blog.update({
             where: {
@@ -146,7 +146,7 @@ export const updateBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const actuallyDeleteBlog = async (req: Request, res: Response) => {
+export const actuallyDeleteBlog: Handler = async (req, res) => {
     try {
         const blogFinalDelete = await prisma.blog.delete({
             where: {
@@ -160,7 +160,7 @@ export const actuallyDeleteBlog = async (req: Request, res: Response) => {
     }
 }
 
-export const popularityScore = async (req: Request, res: Response) => {
+export const popularityScore: Handler = async (req, res) => {
     try {
         const users = await prisma.user.findMany({})
         const usersLength = users.length
@@ -178,7 +178,7 @@ export const popularityScore = async (req: Request, res: Response) => {
     }
 }
 // - - - - - - - -
-export const increaseCounter = async (req: Request, res: Response) => {
+export const increaseCounter: Handler = async (req, res) => {
     try {
         const blogCounter = await prisma.blog.update({
             where: {
@@ -197,7 +197,7 @@ export const increaseCounter = async (req: Request, res: Response) => {
     }
 }
 
-export const deleteAllBlogs = async (req: Request, res: Response) => {
+export const deleteAllBlogs: Handler = async (req, res) => {
     try {
         const blogDelete = await prisma.blog.deleteMany({})
         if (!blogDelete) throw 'Undeletable'
@@ -207,7 +207,7 @@ export const deleteAllBlogs = async (req: Request, res: Response) => {
     }
 }
 
-export const testing = async (req: Request, res: Response) => {
+export const testing: Handler = async (req, res) => {
     try {
         const users = await prisma.user.findMany({
             take: 1,

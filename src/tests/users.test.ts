@@ -1,4 +1,4 @@
-import { userServer } from '../domain/usersTestingServer'
+import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
