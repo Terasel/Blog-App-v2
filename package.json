@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "dev": "ts-node-dev --respawn src/server/index.ts",
     "dev1": "ts-node-dev --respawn src/server/blogTestingServer.ts",
     "dev2": "ts-node-dev --respawn src/server/usersTestingServer.ts",
-    "test": "jest --runInBand"
+    "test": "jest --runInBand",
+    "start": "node build/server/index.js"
   },
   "keywords": [],
   "author": "",

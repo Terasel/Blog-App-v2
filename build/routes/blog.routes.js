@@ -1,8 +1,31 @@
-import { Router } from "express"
-import * as blogServices from '../controller/blog.controller'
-
-const router = Router();
-
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const blogServices = __importStar(require("../controller/blog.controller"));
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * components:
@@ -65,7 +88,6 @@ const router = Router();
  *    schema:
  *     type: integer
  */
-
 /**
  * @swagger
  * tags:
@@ -76,9 +98,7 @@ const router = Router();
  *  - name: Blogs dev
  *    description: Blog endpoints for development/testing purposes
  */
-
 // simpleUser
-
 /**
  * @swagger
  * /api/blog:
@@ -101,9 +121,7 @@ const router = Router();
  *    422:
  *     description: This blog could not be created
  */
-
-router.post('/blog', blogServices.createBlog)
-
+router.post('/blog', blogServices.createBlog);
 /**
  * @swagger
  * /api/blog/{id}/liked:
@@ -122,9 +140,7 @@ router.post('/blog', blogServices.createBlog)
  *    400:
  *     description: This blog's liked status could not be updated
  */
-
-router.patch('/blog/:id/liked', blogServices.likeBlog)
-
+router.patch('/blog/:id/liked', blogServices.likeBlog);
 /**
  * @swagger
  * /api/blog:
@@ -143,9 +159,7 @@ router.patch('/blog/:id/liked', blogServices.likeBlog)
  *    404:
  *     description: No blogs could be found
  */
-
-router.get('/blog', blogServices.getBlogs)
-
+router.get('/blog', blogServices.getBlogs);
 /**
  * @swagger
  * /api/blog/{id}:
@@ -164,9 +178,7 @@ router.get('/blog', blogServices.getBlogs)
  *      404:
  *        description: This blog could not be found
  */
-
-router.get('/blog/:id', blogServices.getBlog)
-
+router.get('/blog/:id', blogServices.getBlog);
 /**
  * @swagger
  * /api/blog/{authorId}/byauthor:
@@ -187,9 +199,7 @@ router.get('/blog/:id', blogServices.getBlog)
  *      404:
  *        description: No blogs from this author could be found
  */
-
-router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
-
+router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor);
 /**
  * @swagger
  * /api/blog/{id}:
@@ -208,9 +218,7 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
  *    400:
  *     description: This blog could not be deleted
  */
-
-router.patch('/blog/:id', blogServices.deleteBlog)
-
+router.patch('/blog/:id', blogServices.deleteBlog);
 /**
  * @swagger
  * /api/blog/{id}/recover:
@@ -229,9 +237,7 @@ router.patch('/blog/:id', blogServices.deleteBlog)
  *    400:
  *     description: This blog could not be recovered
  */
-
-router.patch('/blog/:id/recover', blogServices.recoverBlog)
-
+router.patch('/blog/:id/recover', blogServices.recoverBlog);
 /**
  * @swagger
  * /api/blog/{id}:
@@ -256,9 +262,7 @@ router.patch('/blog/:id/recover', blogServices.recoverBlog)
  *    400:
  *     description: This blog could not be updated
  */
-
-router.put('/blog/:id', blogServices.updateBlog)
-
+router.put('/blog/:id', blogServices.updateBlog);
 /**
  * @swagger
  * /api/blog/{id}/popularity:
@@ -277,12 +281,8 @@ router.put('/blog/:id', blogServices.updateBlog)
  *      404:
  *        description: This blog could not be found
  */
-
-router.get('/blog/:id/popularity', blogServices.popularityScore)
-
+router.get('/blog/:id/popularity', blogServices.popularityScore);
 // admin
-
-
 /**
  * @swagger
  * /api/blog/{id}/final:
@@ -297,12 +297,8 @@ router.get('/blog/:id/popularity', blogServices.popularityScore)
  *      400:
  *        description: This blog could not be completely deleted
  */
-
-router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
-
+router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog);
 // dev
-
-
 /**
  * @swagger
  * /api/blog/{id}/counter:
@@ -321,9 +317,7 @@ router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
  *    400:
  *     description: This blog's like counter could not be increased
  */
-
-router.patch('/blog/:id/counter', blogServices.increaseCounter)
-
+router.patch('/blog/:id/counter', blogServices.increaseCounter);
 /**
  * @swagger
  * /api/blog:
@@ -336,8 +330,6 @@ router.patch('/blog/:id/counter', blogServices.increaseCounter)
  *    400:
  *     description: The blogs could not be deleted
  */
-
-router.delete('/blog', blogServices.deleteAllBlogs)
-router.get('/blog/testing', blogServices.testing)
-
-export default router
+router.delete('/blog', blogServices.deleteAllBlogs);
+router.get('/blog/testing', blogServices.testing);
+exports.default = router;

@@ -1,8 +1,31 @@
-import { Router } from "express"
-import * as userServices from '../controller/user.controller'
-
-const router = Router();
-
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const userServices = __importStar(require("../controller/user.controller"));
+const router = (0, express_1.Router)();
 /**
  * @swagger
  * components:
@@ -48,7 +71,6 @@ const router = Router();
  *     type: integer
  *    description: The user's id
  */
-
 /**
  * @swagger
  * tags:
@@ -59,9 +81,7 @@ const router = Router();
  *   - name: Users dev
  *     description: User endpoints for development/testing purposes
  */
-
 // simpleUser
-
 /**
  * @swagger
  * /api/users:
@@ -84,9 +104,7 @@ const router = Router();
  *    422:
  *     description: This user could not be created
  */
-
-router.post('/users', userServices.createUser)
-
+router.post('/users', userServices.createUser);
 /**
  * @swagger
  * /api/users/{id}:
@@ -111,11 +129,8 @@ router.post('/users', userServices.createUser)
  *    400:
  *     description: This user could not be updated
  */
-
-router.put('/users/:id', userServices.updateUser)
-
+router.put('/users/:id', userServices.updateUser);
 //admin
-
 /**
  * @swagger
  * /api/users:
@@ -132,11 +147,9 @@ router.put('/users/:id', userServices.updateUser)
  *        items:
  *         $ref: '#/components/schemas/User'
  *    404:
- *     description: No users could be found 
+ *     description: No users could be found
  */
-
-router.get('/users', userServices.getUsers)
-
+router.get('/users', userServices.getUsers);
 /**
  * @swagger
  * /api/users/{id}/ban:
@@ -155,12 +168,8 @@ router.get('/users', userServices.getUsers)
  *    400:
  *     description: This user could not be banned/unbanned
  */
-
-router.patch('/users/:id/ban', userServices.banUser)
-
+router.patch('/users/:id/ban', userServices.banUser);
 //dev
-
-
 /**
  * @swagger
  * /api/users:
@@ -173,7 +182,5 @@ router.patch('/users/:id/ban', userServices.banUser)
  *    400:
  *     description: The users could not be deleted
  */
-
-router.delete('/users', userServices.deleteAllUsers)
-
-export default router;
+router.delete('/users', userServices.deleteAllUsers);
+exports.default = router;

@@ -193,7 +193,7 @@ export const increaseCounter: Handler = async (req, res) => {
         if (!blogCounter) throw 'Empty'
         res.status(200).send(blogCounter)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This blog could not be updated')
+        if (err = 'Empty') res.status(400).send("This blog's like counter could not be increased")
     }
 }
 

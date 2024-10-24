@@ -475,7 +475,7 @@ describe('Blog testing', () => {
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Darth Ravage',
+                name: 'Darth Marr',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -491,6 +491,52 @@ describe('Blog testing', () => {
             .get('/api/blog/' + (blogId + 55) + '/popularity')
         expect(blogPopularity.statusCode).toEqual(404)
         expect(blogPopularity.text).toBe('This blog could not be found')
+    })
+    it('should increase the like counter from a blog', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Darth Noctis',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Where troubles melt like lemon drops",
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogCounter = await request(blogServer)
+            .patch('/api/blog/' + blogId + '/counter')
+        expect(blogCounter.statusCode).toEqual(200)
+        expect(blogCounter.body.likeCounter).toBe(1)
+    })
+    it('should not increase the like counter from a blog that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Darth Thanaton',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Where troubles melt like lemon drops?",
+                authorId: userCreate.body.id
+            })
+        const blogId = blogCreate.body.id
+        const blogCounter = await request(blogServer)
+            .patch('/api/blog/' + (blogId + 55) + '/counter')
+        expect(blogCounter.statusCode).toEqual(400)
+        expect(blogCounter.text).toBe("This blog's like counter could not be increased")
     })
 })
 
