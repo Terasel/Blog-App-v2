@@ -2,8 +2,8 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine@hotmail.com",
-  "name": "Tiny Tim",
+  "email": "livininthesunshine33@hotmail.com",
+  "name": "Tiny Tim22",
   "role": "admin"
 }
 
@@ -14,8 +14,8 @@ content-type: application/json
 
 {
 
-"title": "and in the darkness bind them",
-"authorId": 3
+"title": "essuperfort",
+"authorId": 607
 
 }
 
@@ -55,14 +55,15 @@ PATCH http://localhost:3000/api/blog/1/liked
 
 ###
 
-GET http://localhost:3000/api/blog/1/byauthor
+GET http://localhost:3000/api/blog/475/byauthor
 
 ###
 
-PUT http://localhost:3000/api/users/3 HTTP/1.1
+PUT http://localhost:3000/api/users/48 HTTP/1.1
 content-type: application/json
 
 {
+  "email":"toto67@gmail.com",
   "name": "Big Sam"
 }
 
@@ -76,8 +77,50 @@ PATCH http://localhost:3000/api/users/1/unban
 
 ###
 
-PATCH http://localhost:3000/api/blog/1/counter
+PATCH http://localhost:3000/api/blog/300/counter
 
 ###
 
 DELETE http://localhost:3000/api/blog/9/final
+
+###
+DELETE http://localhost:3000/api/blog
+
+###
+DELETE http://localhost:3000/api/users
+
+###
+DELETE http://localhost:3020/api/blog
+
+###
+DELETE http://localhost:3020/api/users
+
+###
+DELETE http://localhost:3010/api/blog
+
+###
+DELETE http://localhost:3010/api/users
+
+###
+
+GET http://localhost:3020/api/users
+
+###
+
+GET http://localhost:3020/api/blog
+
+###
+
+GET http://localhost:3010/api/users
+
+###
+
+GET http://localhost:3010/api/blog
+
+###
+
+GET http://localhost:3000/api/blog/300/popularity
+
+###
+
+GET http://localhost:3000/api/blog/testing
