@@ -19,6 +19,9 @@ const router = Router();
  *     name:
  *      type: string
  *      description: The user's name
+ *     password:
+ *      type: string
+ *      description: The user's password (saved in encrpyted form)
  *     bio:
  *      type: string
  *      description: The user's bio (optional)
@@ -31,11 +34,13 @@ const router = Router();
  *    required:
  *     - email
  *     - name
+ *     - password
  *     - role
  *    example:
  *     id: 414
  *     email: nevergonnagiveyouup@gmail.com
  *     name: Rick Astley
+ *     password: youjustgotrickrolled
  *     bio: We've known each other for so long
  *     role: admin
  *     banned: false

@@ -13,6 +13,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Mission Vao',
+                password: 'missionvao',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -34,6 +35,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Vette',
+                password: 'vette',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -53,6 +55,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Zaalbar',
+                password: 'zaalbar',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -76,6 +79,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Bowdaar',
+                password: 'bowdaar',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -99,6 +103,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Handmaiden',
+                password: 'handmaiden',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -123,6 +128,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Atris',
+                password: 'atris',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -157,6 +163,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Visas Marr',
+                password: 'visasmarr',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -180,6 +187,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Null',
+                password: 'darthnull',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -203,6 +211,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Bao Dur',
+                password: 'baodur',
                 role: 'admin'
             })
         const userCreate2 = await request(blogServer)
@@ -210,6 +219,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'G0-T0',
+                password: 'g0t0',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -245,6 +255,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Sion',
+                password: 'darthsion',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -267,6 +278,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Coorta',
+                password: 'coorta',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -290,6 +302,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Traya',
+                password: 'darthtraya',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -315,6 +328,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Master Kaedan',
+                password: 'masterkaedan',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -339,6 +353,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Nihilus',
+                password: 'darthnihilus',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -368,6 +383,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Ravage',
+                password: 'darthravage',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -384,8 +400,8 @@ describe('Blog testing', () => {
                 title: "Really do come true?",
                 content: 'Vivía un caballero hidalgo'
             })
-        expect(blogUpdate.statusCode).toEqual(400)
-        expect(blogUpdate.text).toBe('This blog could not be updated')
+        expect(blogUpdate.statusCode).toEqual(404)
+        expect(blogUpdate.text).toBe('This blog could not be found')
     })
     it('should irreversibly delete a specific blog', async () => {
         const randomString = new RandomString();
@@ -396,6 +412,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Vogga the Hutt',
+                password: 'voggathehutt',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -421,6 +438,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Visquis',
+                password: 'visquis',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -443,7 +461,8 @@ describe('Blog testing', () => {
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Darth Ravage',
+                name: 'Darth Acina',
+                password: 'darthacina',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -476,6 +495,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Marr',
+                password: 'darthmarr',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -489,8 +509,8 @@ describe('Blog testing', () => {
             .patch('/api/blog/' + blogId + '/liked')
         const blogPopularity = await request(blogServer)
             .get('/api/blog/' + (blogId + 55) + '/popularity')
-        expect(blogPopularity.statusCode).toEqual(404)
-        expect(blogPopularity.text).toBe('This blog could not be found')
+        expect(blogPopularity.statusCode).toEqual(400)
+        expect(blogPopularity.text).toBe("This blog's popularity score could not be displayed")
     })
     it('should increase the like counter from a blog', async () => {
         const randomString = new RandomString();
@@ -500,7 +520,8 @@ describe('Blog testing', () => {
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Darth Noctis',
+                name: 'Darth Mortis',
+                password: 'darthmortis',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)
@@ -524,6 +545,7 @@ describe('Blog testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Thanaton',
+                password: 'darththanaton',
                 role: 'admin'
             })
         const blogCreate = await request(blogServer)

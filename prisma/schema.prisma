@@ -27,11 +27,12 @@ model Blog {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  email  String  @unique
-  name   String
-  bio    String?
-  blogs  Blog[]
-  role   String
-  banned Boolean @default(false)
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String
+  password String
+  bio      String?
+  blogs    Blog[]
+  role     String
+  banned   Boolean @default(false)
 }

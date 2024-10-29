@@ -2,8 +2,9 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine33@hotmail.com",
+  "email": "livininthesunshine34@hotmail.com",
   "name": "Tiny Tim22",
+  "password": "toodles22",
   "role": "admin"
 }
 

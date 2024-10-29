@@ -1,11 +1,9 @@
-import { prisma } from "../database/dbconnection"
-import { Handler } from 'express';
+import { Handler } from 'express'
+import { blogModel } from '../models/blog'
 
 export const createBlog: Handler = async (req, res) => {
     try {
-        const newBlog = await prisma.blog.create({
-            data: req.body
-        })
+        const newBlog = await blogModel.createBlog(req, res)
         if (!newBlog) throw 'Not created'
         res.status(201).send(newBlog)
     } catch (err) {
@@ -16,33 +14,11 @@ export const createBlog: Handler = async (req, res) => {
 export const likeBlog: Handler = async (req, res) => {
     try {
         try {
-            const blogLike = await prisma.blog.update({
-                where: {
-                    id: +req.params.id,
-                    liked: false
-                },
-                data: {
-                    liked: true,
-                    likeCounter: {
-                        increment: 1
-                    }
-                },
-            });
+            const blogLike = await blogModel.likeBlog(req, res)
             if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         } catch {
-            const blogLike = await prisma.blog.update({
-                where: {
-                    id: +req.params.id,
-                    liked: true
-                },
-                data: {
-                    liked: false,
-                    likeCounter: {
-                        increment: -1
-                    }
-                },
-            });
+            const blogLike = await blogModel.dislikeBlog(req, res)
             if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         }
@@ -53,14 +29,7 @@ export const likeBlog: Handler = async (req, res) => {
 
 export const getBlogs: Handler = async (req, res) => {
     try {
-        const blogs = await prisma.blog.findMany({
-            where: {
-                deleted: false
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
+        const blogs = await blogModel.getBlogs(req, res)
         if (!blogs) throw 'Empty'
         res.status(200).send(blogs)
     } catch (err) {
@@ -70,11 +39,7 @@ export const getBlogs: Handler = async (req, res) => {
 
 export const getBlog: Handler = async (req, res) => {
     try {
-        const specificBlog = await prisma.blog.findFirst({
-            where: {
-                id: +req.params.id
-            }
-        })
+        const specificBlog = await blogModel.getBlog(req, res)
         if (!specificBlog) throw 'Empty'
         res.status(200).send(specificBlog)
     } catch (err) {
@@ -84,11 +49,7 @@ export const getBlog: Handler = async (req, res) => {
 
 export const getBlogsByAuthor: Handler = async (req, res) => {
     try {
-        const authorBlogs = await prisma.blog.findMany({
-            where: {
-                authorId: +req.params.authorId
-            }
-        })
+        const authorBlogs = await blogModel.getBlogsByAuthor(req, res)
         if (!authorBlogs) throw 'Empty'
         res.status(200).send(authorBlogs)
     } catch (err) {
@@ -99,14 +60,7 @@ export const getBlogsByAuthor: Handler = async (req, res) => {
 
 export const deleteBlog: Handler = async (req, res) => {
     try {
-        const blogDelete = await prisma.blog.update({
-            where: {
-                id: +req.params.id,
-            },
-            data: {
-                deleted: true,
-            }
-        })
+        const blogDelete = await blogModel.deleteBlog(req, res)
         if (!blogDelete) throw 'Empty'
         res.status(204).send(blogDelete)
     } catch (err) {
@@ -116,14 +70,7 @@ export const deleteBlog: Handler = async (req, res) => {
 
 export const recoverBlog: Handler = async (req, res) => {
     try {
-        const blogRecover = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: {
-                deleted: false
-            }
-        })
+        const blogRecover = await blogModel.recoverBlog(req, res)
         if (!blogRecover) throw 'Empty'
         res.status(200).send(blogRecover)
     } catch (err) {
@@ -133,26 +80,20 @@ export const recoverBlog: Handler = async (req, res) => {
 
 export const updateBlog: Handler = async (req, res) => {
     try {
-        const blogUpdate = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: req.body
-        })
+        const blog = await blogModel.getBlog(req, res)
+        if (!blog) throw 'No blog'
+        const blogUpdate = await blogModel.updateBlog(req, res)
         if (!blogUpdate) throw 'Empty'
         res.status(200).send(blogUpdate)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This blog could not be updated')
+        if (err = 'No blog') res.status(404).send('This blog could not be found')
+        else if (err = 'Empty') res.status(400).send('This blog could not be updated')
     }
 }
 
 export const actuallyDeleteBlog: Handler = async (req, res) => {
     try {
-        const blogFinalDelete = await prisma.blog.delete({
-            where: {
-                id: +req.params.id
-            }
-        })
+        const blogFinalDelete = await blogModel.actuallyDeleteBlog(req, res)
         if (!blogFinalDelete) throw 'Undeletable'
         res.status(204).send(blogFinalDelete)
     } catch (err) {
@@ -162,34 +103,17 @@ export const actuallyDeleteBlog: Handler = async (req, res) => {
 
 export const popularityScore: Handler = async (req, res) => {
     try {
-        const users = await prisma.user.findMany({})
-        const usersLength = users.length
-        const specificBlog = await prisma.blog.findFirst({
-            where: {
-                id: +req.params.id
-            }
-        })
-        const likes = specificBlog!.likeCounter
-        const popularity = (likes / (usersLength - 1)) * 100
-        if (!specificBlog) throw 'No blog'
+        const popularity = await blogModel.popularityScore(req, res)
+        if (!popularity) throw 'No popularity score'
         res.status(200).send(popularity + '%')
     } catch (err) {
-        if (err = 'No blog') res.status(404).send('This blog could not be found')
+        if (err = 'No popularity score') res.status(400).send("This blog's popularity score could not be displayed")
     }
 }
 // - - - - - - - -
 export const increaseCounter: Handler = async (req, res) => {
     try {
-        const blogCounter = await prisma.blog.update({
-            where: {
-                id: +req.params.id
-            },
-            data: {
-                likeCounter: {
-                    increment: 1
-                }
-            }
-        })
+        const blogCounter = await blogModel.increaseCounter(req, res)
         if (!blogCounter) throw 'Empty'
         res.status(200).send(blogCounter)
     } catch (err) {
@@ -199,22 +123,17 @@ export const increaseCounter: Handler = async (req, res) => {
 
 export const deleteAllBlogs: Handler = async (req, res) => {
     try {
-        const blogDelete = await prisma.blog.deleteMany({})
+        const blogDelete = await blogModel.deleteAllBlogs(req, res)
         if (!blogDelete) throw 'Undeletable'
         res.status(204).send(blogDelete)
     } catch (err) {
-        if (err = 'Undeletable') res.status(400).send('The blog could not be deleted')
+        if (err = 'Undeletable') res.status(400).send('The blogs could not be deleted')
     }
 }
 
 export const testing: Handler = async (req, res) => {
     try {
-        const users = await prisma.user.findMany({
-            take: 1,
-            orderBy: {
-                id: 'desc',
-            },
-        })
+        const users = await blogModel.testing(req, res)
         res.status(200).send(users)
     } catch (err) {
         res.status(400).send('The testing did not work')
