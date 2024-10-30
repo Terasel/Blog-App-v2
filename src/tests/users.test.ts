@@ -12,12 +12,14 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Mysterious Stranger',
+                password: 'mysteriousstranger',
                 role: 'admin'
             })
 
         expect(userCreate.statusCode).toEqual(201)
         expect(userCreate.body.email).toBe(emailGen)
         expect(userCreate.body.name).toBe('Mysterious Stranger')
+        expect(userCreate.body.password).toBe('mysteriousstranger')
         expect(userCreate.body.role).toBe('admin')
     })
     it('should not create a new user without the necessary info', async () => {
@@ -25,6 +27,7 @@ describe('User testing', () => {
             .post('/api/users')
             .send({
                 name: 'Mysterious Stranger',
+                password: 'mysteriousstranger',
                 role: 'admin'
             })
 
@@ -40,6 +43,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Darth Revan',
+                password: 'darthrevan',
                 role: 'admin'
             })
         const randomString2 = new RandomString();
@@ -66,6 +70,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Juhani',
+                password: 'juhani',
                 role: 'admin'
             })
         const randomString2 = new RandomString();
@@ -78,8 +83,8 @@ describe('User testing', () => {
                 email: emailGen2,
                 name: 'Juhani?'
             })
-        expect(userUpdate.statusCode).toEqual(400)
-        expect(userUpdate.text).toBe('This user could not be updated')
+        expect(userUpdate.statusCode).toEqual(404)
+        expect(userUpdate.text).toBe('This user could not be found')
     })
     it('should get all users', async () => {
         const usersGet = await request(userServer)
@@ -97,6 +102,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Bastila Shan',
+                password: 'bastilashan',
                 role: 'admin'
             })
         const userId = userCreate.body.id
@@ -114,6 +120,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Theron Shan',
+                password: 'theronshan',
                 role: 'admin'
             })
         const userId = userCreate.body.id
@@ -131,6 +138,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Canderous Ordo',
+                password: 'canderousordo',
                 role: 'admin',
                 banned: true
             })
@@ -149,6 +157,7 @@ describe('User testing', () => {
             .send({
                 email: emailGen,
                 name: 'Lana Beniko',
+                password: 'lanabeniko',
                 role: 'admin',
                 banned: true
             })

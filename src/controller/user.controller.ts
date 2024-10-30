@@ -1,11 +1,9 @@
-import { prisma } from "../database/dbconnection"
-import { Handler } from 'express';
+import { Handler } from 'express'
+import { userModel } from '../models/user'
 
 export const createUser: Handler = async (req, res) => {
     try {
-        const newUser = await prisma.user.create({
-            data: req.body,
-        })
+        const newUser = await userModel.createUser(req, res)
         if (!newUser) throw 'Not created'
         res.status(201).send(newUser)
     } catch (err) {
@@ -15,24 +13,22 @@ export const createUser: Handler = async (req, res) => {
 
 export const updateUser: Handler = async (req, res) => {
     try {
-        const userUpdate = await prisma.user.update({
-            where: {
-                id: +req.params.id
-            },
-            data: req.body
-        })
+        const user = await userModel.getUser(req, res)
+        if (!user) throw 'No user'
+        const userUpdate = await userModel.updateUser(req, res)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This user could not be updated')
+        if (err = 'No user') res.status(404).send('This user could not be found')
+        else if (err = 'Empty') res.status(400).send('This user could not be updated')
     }
 }
 
 export const getUsers: Handler = async (req, res) => {
     try {
-        const users = await prisma.user.findMany({})
+        const users = await userModel.getUsers(req, res)
         if (!users) throw 'No users'
-        res.status(200).send(users);
+        res.status(200).send(users)
     } catch (err) {
         if (err = 'No users') res.status(404).send('No users could be found')
     }
@@ -41,27 +37,11 @@ export const getUsers: Handler = async (req, res) => {
 export const banUser: Handler = async (req, res) => {
     try {
         try {
-            const userBan = await prisma.user.update({
-                where: {
-                    id: +req.params.id,
-                    banned: false
-                },
-                data: {
-                    banned: true
-                }
-            })
+            const userBan = await userModel.banUser(req, res)
             if (!userBan) throw 'Empty'
             res.status(200).send(userBan)
         } catch {
-            const userBan = await prisma.user.update({
-                where: {
-                    id: +req.params.id,
-                    banned: true
-                },
-                data: {
-                    banned: false
-                }
-            })
+            const userBan = await userModel.unbanUser(req, res)
             if (!userBan) throw 'Empty'
             res.status(200).send(userBan)
         }
@@ -73,7 +53,7 @@ export const banUser: Handler = async (req, res) => {
 // - - - - - - - -
 export const deleteAllUsers: Handler = async (req, res) => {
     try {
-        const usersDelete = await prisma.user.deleteMany({})
+        const usersDelete = await userModel.deleteAllUsers(req, res)
         if (!usersDelete) throw 'Undeletable'
         res.status(204).send(usersDelete)
     } catch (err) {
