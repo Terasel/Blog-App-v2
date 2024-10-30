@@ -2,7 +2,7 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine34@hotmail.com",
+  "email": "livininthesunshine35@hotmail.com",
   "name": "Tiny Tim22",
   "password": "toodles22",
   "role": "admin"
@@ -15,8 +15,8 @@ content-type: application/json
 
 {
 
-"title": "essuperfort",
-"authorId": 607
+"title": "esquenose",
+"authorId": 1715
 
 }
 
@@ -56,7 +56,7 @@ PATCH http://localhost:3000/api/blog/1/liked
 
 ###
 
-GET http://localhost:3000/api/blog/475/byauthor
+GET http://localhost:3000/api/blog/1714/byauthor
 
 ###
 

@@ -49,12 +49,14 @@ export const getBlog: Handler = async (req, res) => {
 
 export const getBlogsByAuthor: Handler = async (req, res) => {
     try {
+        const user = await blogModel.getAuthor(req, res)
+        if (!user) throw 'No user'
         const authorBlogs = await blogModel.getBlogsByAuthor(req, res)
         if (!authorBlogs) throw 'Empty'
         res.status(200).send(authorBlogs)
     } catch (err) {
-        if (err = 'Empty') res.status(404).send('No blogs from this author could be found')
-        if (err = 'No blogs') res.status(404).send('This author has no blogs')
+        if (err = 'No user') res.status(404).send('This user does not exist')
+        else if (err = 'Empty') res.status(404).send('No blogs from this author could be found')
     }
 }
 

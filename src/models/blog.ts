@@ -57,6 +57,14 @@ export class blogModel {
         })
         return specificBlog
     }
+    static async getAuthor(req: Request, res: Response) {
+        const author = await prisma.user.findFirst({
+            where: {
+                id: +req.params.authorId
+            }
+        })
+        return author
+    }
     static async getBlogsByAuthor(req: Request, res: Response) {
         const authorBlogs = await prisma.blog.findMany({
             where: {

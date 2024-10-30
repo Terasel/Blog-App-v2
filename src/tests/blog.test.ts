@@ -246,6 +246,49 @@ describe('Blog testing', () => {
         expect(blogGetbyAuthor.body[0].title).toBe("Skies are blue")
         expect(blogGetbyAuthor.body[1].title).toBe("Somewhere over the rainbow?")
     })
+    it('should not get the blogs from an author that does not exist', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Bao Dur',
+                password: 'baodur',
+                role: 'admin'
+            })
+        const userCreate2 = await request(blogServer)
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'G0-T0',
+                password: 'g0t0',
+                role: 'admin'
+            })
+        const blogCreate = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Somewhere over the rainbow?",
+                authorId: userCreate.body.id
+            })
+        const blogCreate2 = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Somewhere over the rainbow!",
+                authorId: userCreate2.body.id
+            })
+        const blogCreate3 = await request(blogServer)
+            .post(`/api/blog`)
+            .send({
+                title: "Skies are blue",
+                authorId: userCreate.body.id
+            })
+        const blogGetbyAuthor = await request(blogServer)
+            .get('/api/blog/' + (blogCreate.body.authorId + 55) + '/byauthor')
+        expect(blogGetbyAuthor.statusCode).toEqual(404)
+        expect(blogGetbyAuthor.text).toBe('This user does not exist')
+    })
     it('should delete a specific blog', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
