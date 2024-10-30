@@ -144,7 +144,7 @@ describe('Blog testing', () => {
         expect(blogLike.statusCode).toEqual(400)
         expect(blogLike.text).toBe("This blog's liked status could not be updated")
     })
-    it('should get all blogs', async () => {
+    it('should get all blogs, with the most recent at the top of the list', async () => {
         const blogsGet = await request(blogServer)
             .get('/api/blog')
         expect(blogsGet.statusCode).toEqual(200)
@@ -202,7 +202,7 @@ describe('Blog testing', () => {
         expect(blogGet.statusCode).toEqual(404)
         expect(blogGet.text).toBe('This blog could not be found')
     })
-    it('should get the blogs from a specific author', async () => {
+    it('should get the blogs from a specific author, with the most recent at the top of the list', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
@@ -243,8 +243,8 @@ describe('Blog testing', () => {
         const blogGetbyAuthor = await request(blogServer)
             .get('/api/blog/' + blogCreate.body.authorId + '/byauthor')
         expect(blogGetbyAuthor.statusCode).toEqual(200)
-        expect(blogGetbyAuthor.body[0].title).toBe("Somewhere over the rainbow?")
-        expect(blogGetbyAuthor.body[1].title).toBe("Skies are blue")
+        expect(blogGetbyAuthor.body[0].title).toBe("Skies are blue")
+        expect(blogGetbyAuthor.body[1].title).toBe("Somewhere over the rainbow?")
     })
     it('should delete a specific blog', async () => {
         const randomString = new RandomString();

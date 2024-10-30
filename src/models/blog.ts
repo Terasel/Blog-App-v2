@@ -61,6 +61,9 @@ export class blogModel {
         const authorBlogs = await prisma.blog.findMany({
             where: {
                 authorId: +req.params.authorId
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
         return authorBlogs
