@@ -3,6 +3,19 @@ import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
+describe('Starting DB delete', () => {
+    it('should delete all blog entries', async () => {
+        const blogDelete = await request(blogServer)
+            .delete('/api/blog')
+        expect(blogDelete.statusCode).toEqual(204)
+    })
+    it('should delete all users', async () => {
+        const usersDelete = await request(blogServer)
+            .delete('/api/users')
+        expect(usersDelete.statusCode).toEqual(204)
+    })
+})
+
 describe('Blog testing', () => {
     it('should create a new blog', async () => {
         const randomString = new RandomString();
@@ -607,7 +620,7 @@ describe('Blog testing', () => {
 
 
 
-describe('DB delete', () => {
+describe('Final DB delete', () => {
     afterAll(() => {
         blogServer.close()
         userServer.close()

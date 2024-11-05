@@ -2,6 +2,19 @@ import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
+describe('Starting DB delete', () => {
+    it('should delete all blog entries', async () => {
+        const blogDelete = await request(userServer)
+            .delete('/api/blog')
+        expect(blogDelete.statusCode).toEqual(204)
+    })
+    it('should delete all users', async () => {
+        const usersDelete = await request(userServer)
+            .delete('/api/users')
+        expect(usersDelete.statusCode).toEqual(204)
+    })
+})
+
 describe('User testing', () => {
     it('should create a new user', async () => {
         const randomString = new RandomString();
@@ -169,7 +182,7 @@ describe('User testing', () => {
     })
 })
 
-describe('DB delete', () => {
+describe('Final DB delete', () => {
     afterAll(() => {
         userServer.close()
     })
