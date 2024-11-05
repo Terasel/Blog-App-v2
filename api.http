@@ -2,7 +2,7 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine35@hotmail.com",
+  "email": "livininthesunshine36@hotmail.com",
   "name": "Tiny Tim22",
   "password": "toodles22",
   "role": "admin"
@@ -15,8 +15,8 @@ content-type: application/json
 
 {
 
-"title": "esquenose",
-"authorId": 1715
+"title": "a ver si sale",
+"authorId": 1902
 
 }
 
@@ -30,11 +30,11 @@ GET http://localhost:3000/api/blog
 
 ###
 
-PUT http://localhost:3000/api/blog/2 HTTP/1.1
+PUT http://localhost:3000/api/blog/1334 HTTP/1.1
 content-type: application/json
 
 {
-  "title": "and in the darkness bind them?"
+  "content": "never gonna gget you down"
 }
 
 ###
