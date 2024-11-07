@@ -1,14 +1,59 @@
-import { Outlet, Link } from "react-router-dom"
+import { useEffect, useState } from "react"
 
-function Register() {
+const Register = () => {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [role, setRole] = useState('simpleUser')
+
+    const submitData = async (e) => {
+        e.preventDefault()
+        const user = {
+            name, email, password, role
+        }
+        console.log(user)
+        const response = await fetch('http://localhost:3000/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        })
+        console.log(response)
+        await setName('')
+        await setEmail('')
+        await setPassword('')
+        await setRole('')
+    }
+
     return (
         <div>
-            <input type="text" name="name" placeholder="Name placeholder" />
-            <input type="text" name="email" placeholder="Email placeholder" />
-            <input type="text" name="password" placeholder="Password placeholder" />
-            <input type="text" name="repeatpassword" placeholder="Repeat password placeholder" />
-            <input type="text" name="role" placeholder="Role placeholder" />
-            <button type="button"><Link to={`/bloglist`}>Sign up</Link></button>
+            <form onSubmit={submitData}>
+                <label>User name:</label>
+                <input
+                    type="text"
+                    value={name}
+                    required
+                    onChange={(e) => setName(e.target.value)} />
+                <label>User email:</label>
+                <input
+                    type="text"
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)} />
+                <label>User password:</label>
+                <input
+                    type="text"
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)} />
+                <label>User role:</label>
+                <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}>
+                    <option value="simpleUser">simpleUser</option>
+                    <option value="admin">admin</option>
+                </select>
+                <button type="submit">Sign up</button>
+            </form>
         </div>
     )
 }

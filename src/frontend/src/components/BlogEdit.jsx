@@ -7,7 +7,7 @@ function BlogEdit() {
             <input type="text" name="title" placeholder="Title placeholder" />
             <input type="text" name="content" placeholder="Content placeholder" />
             <button type="button"><Link to={`/myblogs/:id`}>Submit changes</Link></button>
-            <button type="button"><Link to={`/`}>Back to blogs</Link></button>
+            <button type="button"><Link to={`/bloglist`}>Back to blogs</Link></button>
         </div>
     )
 }

@@ -20,6 +20,7 @@ function BlogList() {
             <button type="button"><Link to={`/userlist`}>User list</Link></button>
             <button type="button"><Link to={`/userpage/:id`}>User page</Link></button>
             <button type="button"><Link to={`/myblogs/:id`}>My blogs</Link></button>
+            <button type="button"><Link to={`/`}>Log out</Link></button>
             {
                 blogs.map(blog => {
                     return (

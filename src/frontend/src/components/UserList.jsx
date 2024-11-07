@@ -25,7 +25,7 @@ function UserList() {
                     )
                 })
             }
-            <button type="button"><Link to={`/`}>Back to blogs</Link></button>
+            <button type="button"><Link to={`/bloglist`}>Back to blogs</Link></button>
         </div>
     )
 }

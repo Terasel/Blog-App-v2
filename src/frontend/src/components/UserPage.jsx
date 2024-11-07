@@ -1,5 +1,6 @@
 import UserEdit from "./UserEdit"
 import BlogNew from "./BlogNew"
+import { Outlet, Link } from "react-router-dom"
 
 function UserPage() {
     return (
@@ -9,7 +10,7 @@ function UserPage() {
             <UserEdit />
             <h2>Write a new blog</h2>
             <BlogNew />
-            <button type="button">Submit changes</button>
+            <button type="button"><Link to={`/bloglist`}>Back to blogs</Link></button>
         </div>
     )
 }
