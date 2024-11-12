@@ -15,8 +15,20 @@ content-type: application/json
 
 {
 
-"title": "a ver si sale",
+"title": "a ver si sale de una vez jolines",
 "authorId": 1902
+
+}
+
+###
+
+POST http://localhost:3000/api/login HTTP/1.1
+content-type: application/json
+
+{
+
+"email": "livininthesunshine36@hotmail.com",
+"password": "toodles22"
 
 }
 

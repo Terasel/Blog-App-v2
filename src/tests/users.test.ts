@@ -1,6 +1,7 @@
 import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
+import bcrypt from 'bcrypt'
 
 describe('Starting DB delete', () => {
     it('should delete all blog entries', async () => {
@@ -28,11 +29,11 @@ describe('User testing', () => {
                 password: 'mysteriousstranger',
                 role: 'admin'
             })
-
+        const validPassword = await bcrypt.compare('mysteriousstranger', userCreate.body.password)
         expect(userCreate.statusCode).toEqual(201)
         expect(userCreate.body.email).toBe(emailGen)
         expect(userCreate.body.name).toBe('Mysterious Stranger')
-        expect(userCreate.body.password).toBe('mysteriousstranger')
+        expect(validPassword).toBe(true)
         expect(userCreate.body.role).toBe('admin')
     })
     it('should not create a new user without the necessary info', async () => {
@@ -140,7 +141,7 @@ describe('User testing', () => {
         const userBan = await request(userServer)
             .patch('/api/users/' + (userId + 55) + '/ban')
         expect(userBan.statusCode).toEqual(400)
-        expect(userBan.text).toBe('This user could not be banned/unbanned')
+        expect(userBan.text).toBe('This user could not be banned')
     })
     it('should unban a user', async () => {
         const randomString = new RandomString();
@@ -157,7 +158,7 @@ describe('User testing', () => {
             })
         const userId = userCreate.body.id
         const userBan = await request(userServer)
-            .patch('/api/users/' + userId + '/ban')
+            .patch('/api/users/' + userId + '/unban')
         expect(userBan.statusCode).toEqual(200)
         expect(userBan.body.banned).toBe(false)
     })
@@ -176,9 +177,9 @@ describe('User testing', () => {
             })
         const userId = userCreate.body.id
         const userBan = await request(userServer)
-            .patch('/api/users/' + (userId + 55) + '/ban')
+            .patch('/api/users/' + (userId + 55) + '/unban')
         expect(userBan.statusCode).toEqual(400)
-        expect(userBan.text).toBe('This user could not be banned/unbanned')
+        expect(userBan.text).toBe('This user could not be unbanned')
     })
 })
 

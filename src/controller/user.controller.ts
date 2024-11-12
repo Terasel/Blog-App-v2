@@ -1,5 +1,10 @@
 import { Handler } from 'express'
 import { userModel } from '../models/user'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const createUser: Handler = async (req, res) => {
     try {
@@ -36,19 +41,42 @@ export const getUsers: Handler = async (req, res) => {
 
 export const banUser: Handler = async (req, res) => {
     try {
-        try {
-            const userBan = await userModel.banUser(req, res)
-            if (!userBan) throw 'Empty'
-            res.status(200).send(userBan)
-        } catch {
-            const userBan = await userModel.unbanUser(req, res)
-            if (!userBan) throw 'Empty'
-            res.status(200).send(userBan)
-        }
+        const userBan = await userModel.banUser(req, res)
+        if (!userBan) throw 'Empty'
+        res.status(200).send(userBan)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This user could not be banned/unbanned')
+        if (err = 'Empty') res.status(400).send('This user could not be banned')
     }
+}
 
+export const unbanUser: Handler = async (req, res) => {
+    try {
+        const userBan = await userModel.unbanUser(req, res)
+        if (!userBan) throw 'Empty'
+        res.status(200).send(userBan)
+    } catch (err) {
+        if (err = 'Empty') res.status(400).send('This user could not be unbanned')
+    }
+}
+
+export const loginUser: Handler = async (req, res) => {
+    try {
+        const userLogin = await userModel.loginUser(req, res)
+        const isValid = await bcrypt.compare(req.body.password, userLogin!.password)
+        if (!isValid) throw 'Invalid'
+        const token = jwt.sign(
+            { id: userLogin?.id, name: userLogin?.name, email: userLogin?.email, role: userLogin?.role },
+            process.env.SECRET_JWT_KEY!,
+            {
+                expiresIn: '1h'
+            })
+        console.log(token)
+        res.status(200)
+            .cookie('access_token', token, { httpOnly: true })
+            .send({ email: userLogin!.email })
+    } catch (err) {
+        if (err = 'Invalid') res.status(400).send('The password is incorrect')
+    }
 }
 // - - - - - - - -
 export const deleteAllUsers: Handler = async (req, res) => {

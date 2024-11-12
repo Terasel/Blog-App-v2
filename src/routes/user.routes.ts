@@ -146,22 +146,68 @@ router.get('/users', userServices.getUsers)
  * @swagger
  * /api/users/{id}/ban:
  *  patch:
- *   summary: Ban/unban a user
+ *   summary: Ban a user
  *   tags: [Users admin]
  *   parameters:
  *    - $ref: '#/components/parameters/userId'
  *   responses:
  *    200:
- *     description: The banned/unbanned user
+ *     description: The banned user
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/User'
  *    400:
- *     description: This user could not be banned/unbanned
+ *     description: This user could not be banned
  */
 
 router.patch('/users/:id/ban', userServices.banUser)
+
+/**
+ * @swagger
+ * /api/users/{id}/unban:
+ *  patch:
+ *   summary: Unban a user
+ *   tags: [Users admin]
+ *   parameters:
+ *    - $ref: '#/components/parameters/userId'
+ *   responses:
+ *    200:
+ *     description: The unbanned user
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/User'
+ *    400:
+ *     description: This user could not be unbanned
+ */
+
+router.patch('/users/:id/unban', userServices.unbanUser)
+
+/**
+ * @swagger
+ * /api/login:
+ *  post:
+ *   summary: Login a user
+ *   tags: [Users simpleUser]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/User'
+ *   responses:
+ *    201:
+ *     description: User succesfully logged in
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/User'
+ *    422:
+ *     description: The password is incorrect
+ */
+
+router.post('/login', userServices.loginUser)
 
 //dev
 

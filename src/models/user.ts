@@ -1,11 +1,15 @@
 import { prisma } from "../database/dbconnection"
 import { Request, Response } from 'express'
+import bcrypt from 'bcrypt'
 
 export class userModel {
     static async createUser(req: Request, res: Response) {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10)
+        const hashedUser = { email: req.body.email, name: req.body.name, password: hashedPassword, role: req.body.role, banned: req.body.banned }
         const newUser = await prisma.user.create({
-            data: req.body,
+            data: hashedUser,
         })
+
         return newUser
     }
     static async updateUser(req: Request, res: Response) {
@@ -52,6 +56,14 @@ export class userModel {
             }
         })
         return userBan
+    }
+    static async loginUser(req: Request, res: Response) {
+        const login = await prisma.user.findFirst({
+            where: {
+                email: req.body.email
+            }
+        })
+        return login
     }
     static async deleteAllUsers(req: Request, res: Response) {
         const usersDelete = await prisma.user.deleteMany({})

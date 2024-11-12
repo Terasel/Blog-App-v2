@@ -18,10 +18,10 @@ const Register = () => {
             body: JSON.stringify(user)
         })
         console.log(response)
-        await setName('')
-        await setEmail('')
-        await setPassword('')
-        await setRole('')
+        setName('')
+        setEmail('')
+        setPassword('')
+        setRole('')
     }
 
     return (

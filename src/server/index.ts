@@ -5,6 +5,7 @@ import blogRoutes from '../routes/blog.routes'
 import swaggerUI from 'swagger-ui-express'
 import swaggerJsDoc from 'swagger-jsdoc'
 import { options } from '../documentation/swaggerOptions'
+import cookieParser from 'cookie-parser'
 
 export const app = express()
 
@@ -14,6 +15,7 @@ app.use('/api', userRoutes)
 app.use('/api', blogRoutes)
 const specs = swaggerJsDoc(options)
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs))
+app.use(cookieParser())
 
 app.listen(3000)
 console.log('Server on port', 3000)
