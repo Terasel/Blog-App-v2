@@ -36,17 +36,12 @@ const Login = () => {
                     required
                     onChange={(e) => setPassword(e.target.value)} />
                 <button type="submit">
-                    {/* <Link to={`/bloglist`}> */}
-                    Login
-                    {/* </Link> */}
+                    <Link to={`/bloglist`}>
+                        Login
+                    </Link>
                 </button>
             </form>
         </div>
-        // <div>
-        //     <input type="text" name="email" placeholder="Email placeholder" />
-        //     <input type="text" name="password" placeholder="Password placeholder" />
-        //     <button type="button"><Link to={`/bloglist`}>Login</Link></button>
-        // </div>
     )
 }
 

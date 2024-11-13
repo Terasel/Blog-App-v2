@@ -11,11 +11,12 @@ export const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 app.use('/api', userRoutes)
 app.use('/api', blogRoutes)
 const specs = swaggerJsDoc(options)
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs))
-app.use(cookieParser())
+
 
 app.listen(3000)
 console.log('Server on port', 3000)

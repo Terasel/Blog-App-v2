@@ -71,8 +71,9 @@ export const loginUser: Handler = async (req, res) => {
                 expiresIn: '1h'
             })
         console.log(token)
-        res.status(200)
+        res
             .cookie('access_token', token, { httpOnly: true })
+            .status(200)
             .send({ email: userLogin!.email })
     } catch (err) {
         if (err = 'Invalid') res.status(400).send('The password is incorrect')
