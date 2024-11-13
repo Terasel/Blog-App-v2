@@ -14,13 +14,24 @@ function BlogList() {
         }
         fetchData()
     }, [])
+
+    const logoutData = async (e) => {
+        e.preventDefault()
+        const response = await fetch('http://localhost:3000/api/logout', {
+            method: 'POST',
+            credentials: "include",
+            headers: { 'Content-Type': 'application/json' }
+        })
+        console.log(response)
+        window.location.assign("/")
+    }
     return (
         <div>
             <h1>The blog app</h1>
             <button type="button"><Link to={`/userlist`}>User list</Link></button>
             <button type="button"><Link to={`/userpage/:id`}>User page</Link></button>
             <button type="button"><Link to={`/myblogs/:id`}>My blogs</Link></button>
-            <button type="button"><Link to={`/`}>Log out</Link></button>
+            <button type="button" onClick={logoutData}>Log out</button>
             {
                 blogs.map(blog => {
                     return (

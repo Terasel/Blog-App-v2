@@ -79,6 +79,13 @@ export const loginUser: Handler = async (req, res) => {
         if (err = 'Invalid') res.status(400).send('The password is incorrect')
     }
 }
+
+export const logoutUser: Handler = async (req, res) => {
+    res
+        .clearCookie('access_token')
+        .status(200)
+        .send('Logout successful')
+}
 // - - - - - - - -
 export const deleteAllUsers: Handler = async (req, res) => {
     try {

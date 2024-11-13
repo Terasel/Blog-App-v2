@@ -9,7 +9,18 @@ import cookieParser from 'cookie-parser'
 
 export const app = express()
 
-app.use(cors())
+const corsOptions = {
+    // set origin to a specific origin.
+    origin: 'http://localhost:5173',
+
+    // or, set origin to true to reflect the request origin
+    //origin: true,
+
+    credentials: true,
+    optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json())
 app.use(cookieParser())
 app.use('/api', userRoutes)

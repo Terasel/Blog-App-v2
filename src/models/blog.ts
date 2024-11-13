@@ -1,5 +1,6 @@
 import { prisma } from "../database/dbconnection"
 import { Request, Response } from 'express'
+import jwt from 'jsonwebtoken'
 
 export class blogModel {
     static async createBlog(req: Request, res: Response) {
@@ -66,9 +67,10 @@ export class blogModel {
         return author
     }
     static async getBlogsByAuthor(req: Request, res: Response) {
+        const token = req.cookies.access_token
         const authorBlogs = await prisma.blog.findMany({
             where: {
-                authorId: +req.params.authorId
+                authorId: token.id || +req.params.authorId
             },
             orderBy: {
                 createdAt: 'desc'

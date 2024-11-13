@@ -209,6 +209,29 @@ router.patch('/users/:id/unban', userServices.unbanUser)
 
 router.post('/login', userServices.loginUser)
 
+/**
+ * @swagger
+ * /api/logout:
+ *  post:
+ *   summary: Logout a user
+ *   tags: [Users simpleUser]
+ *   requestBody:
+ *    required: true
+ *    content:
+ *     application/json:
+ *      schema:
+ *       $ref: '#/components/schemas/User'
+ *   responses:
+ *    200:
+ *     description: User succesfully logged out
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/User'
+ */
+
+router.post('/logout', userServices.logoutUser)
+
 //dev
 
 
