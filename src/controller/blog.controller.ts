@@ -1,9 +1,20 @@
 import { Handler } from 'express'
 import { blogModel } from '../models/blog'
+import jwt from 'jsonwebtoken'
+
+interface JwtPayload {
+    id: number,
+    name: string,
+    email: string,
+    role: string
+}
 
 export const createBlog: Handler = async (req, res) => {
     try {
-        const newBlog = await blogModel.createBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqCreate = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id || req.body.authorId }
+        const newBlog = await blogModel.createBlog(reqCreate)
         if (!newBlog) throw 'Not created'
         res.status(201).send(newBlog)
     } catch (err) {
@@ -14,11 +25,17 @@ export const createBlog: Handler = async (req, res) => {
 export const likeBlog: Handler = async (req, res) => {
     try {
         try {
-            const blogLike = await blogModel.likeBlog(req, res)
+            const token = req.cookies.access_token
+            const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+            const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+            const blogLike = await blogModel.likeBlog(reqFind)
             if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         } catch {
-            const blogLike = await blogModel.dislikeBlog(req, res)
+            const token = req.cookies.access_token
+            const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+            const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+            const blogLike = await blogModel.dislikeBlog(reqFind)
             if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);
         }
@@ -29,7 +46,7 @@ export const likeBlog: Handler = async (req, res) => {
 
 export const getBlogs: Handler = async (req, res) => {
     try {
-        const blogs = await blogModel.getBlogs(req, res)
+        const blogs = await blogModel.getBlogs()
         if (!blogs) throw 'Empty'
         res.status(200).send(blogs)
     } catch (err) {
@@ -39,7 +56,10 @@ export const getBlogs: Handler = async (req, res) => {
 
 export const getBlog: Handler = async (req, res) => {
     try {
-        const specificBlog = await blogModel.getBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const specificBlog = await blogModel.getBlog(reqFind)
         if (!specificBlog) throw 'Empty'
         res.status(200).send(specificBlog)
     } catch (err) {
@@ -49,9 +69,12 @@ export const getBlog: Handler = async (req, res) => {
 
 export const getBlogsByAuthor: Handler = async (req, res) => {
     try {
-        const user = await blogModel.getAuthor(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const user = await blogModel.getAuthor(reqFind)
         if (!user) throw 'No user'
-        const authorBlogs = await blogModel.getBlogsByAuthor(req, res)
+        const authorBlogs = await blogModel.getBlogsByAuthor(reqFind)
         if (!authorBlogs) throw 'Empty'
         res.status(200).send(authorBlogs)
     } catch (err) {
@@ -62,7 +85,10 @@ export const getBlogsByAuthor: Handler = async (req, res) => {
 
 export const deleteBlog: Handler = async (req, res) => {
     try {
-        const blogDelete = await blogModel.deleteBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqDelete = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const blogDelete = await blogModel.deleteBlog(reqDelete)
         if (!blogDelete) throw 'Empty'
         res.status(204).send(blogDelete)
     } catch (err) {
@@ -72,7 +98,10 @@ export const deleteBlog: Handler = async (req, res) => {
 
 export const recoverBlog: Handler = async (req, res) => {
     try {
-        const blogRecover = await blogModel.recoverBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqRecover = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const blogRecover = await blogModel.recoverBlog(reqRecover)
         if (!blogRecover) throw 'Empty'
         res.status(200).send(blogRecover)
     } catch (err) {
@@ -82,9 +111,12 @@ export const recoverBlog: Handler = async (req, res) => {
 
 export const updateBlog: Handler = async (req, res) => {
     try {
-        const blog = await blogModel.getBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqUpdate = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const blog = await blogModel.getBlog(reqUpdate)
         if (!blog) throw 'No blog'
-        const blogUpdate = await blogModel.updateBlog(req, res)
+        const blogUpdate = await blogModel.updateBlog(reqUpdate)
         if (!blogUpdate) throw 'Empty'
         res.status(200).send(blogUpdate)
     } catch (err) {
@@ -95,7 +127,10 @@ export const updateBlog: Handler = async (req, res) => {
 
 export const actuallyDeleteBlog: Handler = async (req, res) => {
     try {
-        const blogFinalDelete = await blogModel.actuallyDeleteBlog(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqDelete = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const blogFinalDelete = await blogModel.actuallyDeleteBlog(reqDelete)
         if (!blogFinalDelete) throw 'Undeletable'
         res.status(204).send(blogFinalDelete)
     } catch (err) {
@@ -105,7 +140,10 @@ export const actuallyDeleteBlog: Handler = async (req, res) => {
 
 export const popularityScore: Handler = async (req, res) => {
     try {
-        const popularity = await blogModel.popularityScore(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const popularity = await blogModel.popularityScore(reqFind)
         if (!popularity) throw 'No popularity score'
         res.status(200).send(popularity + '%')
     } catch (err) {
@@ -115,7 +153,10 @@ export const popularityScore: Handler = async (req, res) => {
 // - - - - - - - -
 export const increaseCounter: Handler = async (req, res) => {
     try {
-        const blogCounter = await blogModel.increaseCounter(req, res)
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+        const blogCounter = await blogModel.increaseCounter(reqFind)
         if (!blogCounter) throw 'Empty'
         res.status(200).send(blogCounter)
     } catch (err) {
@@ -125,7 +166,7 @@ export const increaseCounter: Handler = async (req, res) => {
 
 export const deleteAllBlogs: Handler = async (req, res) => {
     try {
-        const blogDelete = await blogModel.deleteAllBlogs(req, res)
+        const blogDelete = await blogModel.deleteAllBlogs()
         if (!blogDelete) throw 'Undeletable'
         res.status(204).send(blogDelete)
     } catch (err) {
@@ -135,7 +176,7 @@ export const deleteAllBlogs: Handler = async (req, res) => {
 
 export const testing: Handler = async (req, res) => {
     try {
-        const users = await blogModel.testing(req, res)
+        const users = await blogModel.testing()
         res.status(200).send(users)
     } catch (err) {
         res.status(400).send('The testing did not work')

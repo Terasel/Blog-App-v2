@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import User from "./User"
-import { Outlet, Link } from "react-router-dom"
 
 function UserList() {
     const [users, setUsers] = useState([])
@@ -14,6 +13,11 @@ function UserList() {
         }
         fetchData()
     }, [])
+
+    const blogList = async () => {
+        window.location.assign("/bloglist")
+    }
+
     return (
 
         <div>
@@ -25,7 +29,7 @@ function UserList() {
                     )
                 })
             }
-            <button type="button"><Link to={`/bloglist`}>Back to blogs</Link></button>
+            <button type="button" onClick={blogList}>Back to blogs</button>
         </div>
     )
 }

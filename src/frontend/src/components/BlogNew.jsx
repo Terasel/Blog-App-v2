@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-function BlogNew() {
+function BlogNew(req) {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [authorId, setAuthorId] = useState('')
@@ -35,12 +35,12 @@ function BlogNew() {
                     type="text"
                     value={content}
                     onChange={(e) => setContent(e.target.value)} />
-                <label>Blog author:</label>
+                {/* <label>Blog author:</label>
                 <input
                     type="number"
                     value={authorId}
                     required
-                    onChange={(e) => setAuthorId(Number(e.target.value))} />
+                    onChange={(e) => setAuthorId(Number(e.target.value))} /> */}
                 <button type="submit">Create blog</button>
             </form>
         </div>

@@ -3,7 +3,7 @@ function BlogPersonal({ blogpersonal }) {
         <div>
             <h2>{blogpersonal.title}</h2>
             <p>{blogpersonal.content}</p>
-            <p>Author placeholder</p>
+            <p>{blogpersonal.authorId}</p>
             <p>{blogpersonal.createdAt}</p>
             <p>{blogpersonal.updatedAt}</p>
             <p>Popularity placeholder</p>

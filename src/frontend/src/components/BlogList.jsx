@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import Blog from "./Blog"
-import { Outlet, Link } from "react-router-dom"
 
 function BlogList() {
     const [blogs, setBlogs] = useState([])
@@ -25,12 +24,25 @@ function BlogList() {
         console.log(response)
         window.location.assign("/")
     }
+
+    const userList = async () => {
+        window.location.assign("/userlist")
+    }
+
+    const userPage = async () => {
+        window.location.assign("/userpage/:id")
+    }
+
+    const myBlogs = async () => {
+        window.location.assign("/myblogs/:id")
+    }
+
     return (
         <div>
             <h1>The blog app</h1>
-            <button type="button"><Link to={`/userlist`}>User list</Link></button>
-            <button type="button"><Link to={`/userpage/:id`}>User page</Link></button>
-            <button type="button"><Link to={`/myblogs/:id`}>My blogs</Link></button>
+            <button type="button" onClick={userList}>User list</button>
+            <button type="button" onClick={userPage}>User page</button>
+            <button type="button" onClick={myBlogs}>My blogs</button>
             <button type="button" onClick={logoutData}>Log out</button>
             {
                 blogs.map(blog => {
