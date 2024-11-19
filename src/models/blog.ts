@@ -2,6 +2,24 @@ import { prisma } from "../database/dbconnection"
 import jwt from 'jsonwebtoken'
 
 interface Requested {
+    title: string,
+    content: string,
+    authorId: number
+}
+
+interface RequestedLiked {
+    id: number,
+    title: string,
+    content: string,
+    authorId: number,
+    liked: boolean,
+    likeCounter: number,
+    deleted: boolean,
+    createdAt: number,
+    updatedAt: number
+}
+
+interface RequestedTwo {
     id: number,
     title: string,
     content: string,
@@ -12,11 +30,12 @@ export class blogModel {
     static async createBlog(reqCreate: Requested) {
 
         const newBlog = await prisma.blog.create({
-            data: { title: reqCreate.title, content: reqCreate.content, authorId: reqCreate.authorId }
+            data:
+                { title: reqCreate.title, content: reqCreate.content, authorId: reqCreate.authorId }
         })
         return newBlog
     }
-    static async likeBlog(reqLike: Requested) {
+    static async likeBlog(reqLike: RequestedLiked) {
         const blogLike = await prisma.blog.update({
             where: {
                 id: +reqLike.id,
@@ -31,7 +50,7 @@ export class blogModel {
         })
         return blogLike
     }
-    static async dislikeBlog(reqDislike: Requested) {
+    static async dislikeBlog(reqDislike: RequestedTwo) {
         const blogLike = await prisma.blog.update({
             where: {
                 id: +reqDislike.id,
@@ -57,7 +76,7 @@ export class blogModel {
         })
         return blogs
     }
-    static async getBlog(reqId: Requested) {
+    static async getBlog(reqId: RequestedTwo) {
         const specificBlog = await prisma.blog.findFirst({
             where: {
                 id: +reqId.id
@@ -65,7 +84,7 @@ export class blogModel {
         })
         return specificBlog
     }
-    static async getAuthor(reqId: Requested) {
+    static async getAuthor(reqId: RequestedTwo) {
         const author = await prisma.user.findFirst({
             where: {
                 id: +reqId.authorId
@@ -73,7 +92,7 @@ export class blogModel {
         })
         return author
     }
-    static async getBlogsByAuthor(reqId: Requested) {
+    static async getBlogsByAuthor(reqId: RequestedTwo) {
         const authorBlogs = await prisma.blog.findMany({
             where: {
                 authorId: +reqId.authorId
@@ -84,7 +103,7 @@ export class blogModel {
         })
         return authorBlogs
     }
-    static async deleteBlog(reqId: Requested) {
+    static async deleteBlog(reqId: RequestedTwo) {
         const blogDelete = await prisma.blog.update({
             where: {
                 id: +reqId.id,
@@ -95,7 +114,7 @@ export class blogModel {
         })
         return blogDelete
     }
-    static async recoverBlog(reqId: Requested) {
+    static async recoverBlog(reqId: RequestedTwo) {
         const blogRecover = await prisma.blog.update({
             where: {
                 id: +reqId.id
@@ -106,16 +125,16 @@ export class blogModel {
         })
         return blogRecover
     }
-    static async updateBlog(reqId: Requested) {
+    static async updateBlog(reqId: RequestedTwo) {
         const blogUpdate = await prisma.blog.update({
             where: {
                 id: +reqId.id
             },
-            data: { title: reqId.title, content: reqId.content, authorId: reqId.authorId }
+            data: reqId
         })
         return blogUpdate
     }
-    static async actuallyDeleteBlog(reqId: Requested) {
+    static async actuallyDeleteBlog(reqId: RequestedTwo) {
         const blogFinalDelete = await prisma.blog.delete({
             where: {
                 id: +reqId.id
@@ -123,7 +142,7 @@ export class blogModel {
         })
         return blogFinalDelete
     }
-    static async popularityScore(reqId: Requested) {
+    static async popularityScore(reqId: RequestedTwo) {
         const users = await prisma.user.findMany({})
         const usersLength = users.length
         const specificBlog = await prisma.blog.findFirst({
@@ -135,7 +154,7 @@ export class blogModel {
         const popularity = (likes / (usersLength - 1)) * 100
         return popularity
     }
-    static async increaseCounter(reqId: Requested) {
+    static async increaseCounter(reqId: RequestedTwo) {
         const blogCounter = await prisma.blog.update({
             where: {
                 id: +reqId.id

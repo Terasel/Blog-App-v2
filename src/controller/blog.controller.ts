@@ -9,11 +9,17 @@ interface JwtPayload {
     role: string
 }
 
+interface createInterface {
+    title: string,
+    content: string,
+    authorId: number
+}
+
 export const createBlog: Handler = async (req, res) => {
     try {
         const token = req.cookies.access_token
         const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
-        const reqCreate = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id || req.body.authorId }
+        const reqCreate: createInterface = { title: req.body.title, content: req.body.content || '', authorId: req.body.authorId || decoded.id }
         const newBlog = await blogModel.createBlog(reqCreate)
         if (!newBlog) throw 'Not created'
         res.status(201).send(newBlog)
@@ -27,7 +33,11 @@ export const likeBlog: Handler = async (req, res) => {
         try {
             const token = req.cookies.access_token
             const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
-            const reqFind = { id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id }
+            const reqFind = {
+                id: req.body.id, title: req.body.title, content: req.body.content, authorId: decoded.id,
+                liked: req.body.liked, likeCounter: req.body.likeCounter, deleted: req.body.deleted, createdAt: req.body.createdAt,
+                updatedAt: req.body.updatedAt
+            }
             const blogLike = await blogModel.likeBlog(reqFind)
             if (!blogLike) throw 'Empty'
             res.status(200).send(blogLike);

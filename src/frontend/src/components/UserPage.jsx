@@ -3,6 +3,9 @@ import BlogNew from "./BlogNew"
 import { Outlet, Link } from "react-router-dom"
 
 function UserPage() {
+    const blogList = async () => {
+        window.location.assign("/bloglist")
+    }
     return (
         <div>
             <h1>Your personal page</h1>
@@ -10,7 +13,7 @@ function UserPage() {
             <UserEdit />
             <h2>Write a new blog</h2>
             <BlogNew />
-            <button type="button"><Link to={`/bloglist`}>Back to blogs</Link></button>
+            <button type="button" onClick={blogList}>Back to blogs</button>
         </div>
     )
 }

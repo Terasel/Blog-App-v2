@@ -1,34 +1,51 @@
 import { prisma } from "../database/dbconnection"
-import { Request, Response } from 'express'
+// import { Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 
+interface userTemplate {
+    id: number,
+    name: string,
+    password: string,
+    email: string,
+    role: string,
+    banned: boolean
+}
+
+interface userCreated {
+    email: string,
+    name: string,
+    password: string,
+    role: string
+}
+
+
 export class userModel {
-    static async createUser(req: Request, res: Response) {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const hashedUser = { email: req.body.email, name: req.body.name, password: hashedPassword, role: req.body.role, banned: req.body.banned }
+    static async createUser(userCreate: userCreated) {
+        const hashedPassword = await bcrypt.hash(userCreate.password, 10)
+        const hashedUser = { email: userCreate.email, name: userCreate.name, password: hashedPassword, role: userCreate.role }
         const newUser = await prisma.user.create({
             data: hashedUser,
         })
 
         return newUser
     }
-    static async updateUser(req: Request, res: Response) {
+    static async updateUser(userFind: userTemplate) {
         const userUpdate = await prisma.user.update({
             where: {
-                id: +req.params.id
+                id: +userFind.id
             },
-            data: req.body
+            data: userFind
         })
         return userUpdate
     }
-    static async getUsers(req: Request, res: Response) {
+    static async getUsers() {
         const users = await prisma.user.findMany({})
         return users
     }
-    static async banUser(req: Request, res: Response) {
+    static async banUser(userFind: userTemplate) {
         const userBan = await prisma.user.update({
             where: {
-                id: +req.params.id,
+                id: +userFind.id,
                 banned: false
             },
             data: {
@@ -37,18 +54,18 @@ export class userModel {
         })
         return userBan
     }
-    static async getUser(req: Request, res: Response) {
+    static async getUser(userFind: userTemplate) {
         const specificUser = await prisma.user.findFirst({
             where: {
-                id: +req.params.id
+                id: +userFind.id
             }
         })
         return specificUser
     }
-    static async unbanUser(req: Request, res: Response) {
+    static async unbanUser(userFind: userTemplate) {
         const userBan = await prisma.user.update({
             where: {
-                id: +req.params.id,
+                id: +userFind.id,
                 banned: true
             },
             data: {
@@ -57,15 +74,15 @@ export class userModel {
         })
         return userBan
     }
-    static async loginUser(req: Request, res: Response) {
+    static async loginUser(userFind: userTemplate) {
         const login = await prisma.user.findFirst({
             where: {
-                email: req.body.email
+                email: userFind.email
             }
         })
         return login
     }
-    static async deleteAllUsers(req: Request, res: Response) {
+    static async deleteAllUsers() {
         const usersDelete = await prisma.user.deleteMany({})
         return usersDelete
     }

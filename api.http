@@ -10,14 +10,39 @@ content-type: application/json
 
 ###
 
+POST http://localhost:3000/api/login HTTP/1.1
+content-type: application/json
+
+{
+
+"email": "livininthesunshine36@hotmail.com",
+"password": "toodles22"
+}
+
+###
+
+POST http://localhost:3000/api/logout HTTP/1.1
+content-type: application/json
+
+###
+
 POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
 
 "title": "cachislamarsalada",
-"authorId": 2191
+"authorId": 2255
+}
 
+### Con token
+
+POST http://localhost:3000/api/blog HTTP/1.1
+content-type: application/json
+
+{
+
+"title": "dabadumbadumbalera"
 }
 
 ###
