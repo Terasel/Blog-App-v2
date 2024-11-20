@@ -123,7 +123,7 @@ router.post('/blog', blogServices.createBlog)
  *     description: This blog's liked status could not be updated
  */
 
-router.patch('/blog/:id/liked', blogServices.likeBlog)
+// router.patch('/blog/:id/liked', blogServices.likeBlog)
 
 /**
  * @swagger
@@ -338,6 +338,6 @@ router.patch('/blog/:id/counter', blogServices.increaseCounter)
  */
 
 router.delete('/blog', blogServices.deleteAllBlogs)
-router.get('/blog/testing', blogServices.testing)
+router.get('/blog/testing/:authorId', blogServices.testing)
 
 export default router

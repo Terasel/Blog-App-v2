@@ -18,7 +18,11 @@ const Login = () => {
             body: JSON.stringify(user)
         })
         console.log(response)
-        window.location.assign("/bloglist")
+        if (!response.ok) {
+            console.log('Login error')
+        } else {
+            window.location.assign("/bloglist")
+        }
         setEmail('')
         setPassword('')
     }

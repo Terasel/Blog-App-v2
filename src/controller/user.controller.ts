@@ -14,7 +14,7 @@ interface userCreated {
 }
 
 interface userTemplate {
-    id: number,
+    id: string,
     name: string,
     password: string,
     email: string,
@@ -22,6 +22,14 @@ interface userTemplate {
     banned: boolean
 }
 
+interface userUpdate {
+    name: string,
+    email: string
+}
+
+interface userFind {
+    id: string
+}
 
 export const createUser: Handler = async (req, res) => {
     try {
@@ -36,10 +44,11 @@ export const createUser: Handler = async (req, res) => {
 
 export const updateUser: Handler = async (req, res) => {
     try {
-        const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
+        const userC: userFind = { id: req.params.id }
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
-        const userUpdate = await userModel.updateUser(userC)
+        const userU: userUpdate = { name: req.body.name, email: req.body.email }
+        const userUpdate = await userModel.updateUser(userC, userU)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
@@ -60,7 +69,7 @@ export const getUsers: Handler = async (req, res) => {
 
 export const banUser: Handler = async (req, res) => {
     try {
-        const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
+        const userC: userFind = { id: req.params.id }
         const userBan = await userModel.banUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
@@ -71,7 +80,7 @@ export const banUser: Handler = async (req, res) => {
 
 export const unbanUser: Handler = async (req, res) => {
     try {
-        const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
+        const userC: userFind = { id: req.params.id }
         const userBan = await userModel.unbanUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)

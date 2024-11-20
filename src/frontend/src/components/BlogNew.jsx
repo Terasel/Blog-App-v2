@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 function BlogNew() {
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
-    // const [authorId, setAuthorId] = useState('')
     const submitData = async (e) => {
         e.preventDefault()
         const blog = {
@@ -20,7 +19,6 @@ function BlogNew() {
         console.log(response)
         await setTitle('')
         await setContent('')
-        // await setAuthorId('')
     }
 
     return (
@@ -37,12 +35,6 @@ function BlogNew() {
                     type="text"
                     value={content}
                     onChange={(e) => setContent(e.target.value)} />
-                {/* <label>Blog author:</label>
-                <input
-                    type="number"
-                    value={authorId}
-                    required
-                    onChange={(e) => setAuthorId(Number(e.target.value))} /> */}
                 <button type="submit">Create blog</button>
             </form>
         </div>

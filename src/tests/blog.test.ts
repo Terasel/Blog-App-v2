@@ -1,5 +1,5 @@
 import { blogServer } from '../server/blogTestingServer'
-import { userServer } from '../server/usersTestingServer'
+// import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
 
@@ -14,10 +14,7 @@ describe('Starting DB delete', () => {
             .delete('/api/users')
         expect(usersDelete.statusCode).toEqual(204)
     })
-})
-
-describe('Blog testing', () => {
-    it('should create a new blog', async () => {
+    it('should login a user', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
@@ -25,19 +22,30 @@ describe('Blog testing', () => {
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Mission Vao',
-                password: 'missionvao',
+                name: 'Morrigan',
+                password: 'morrigan',
                 role: 'admin'
             })
+        const userLogin = await request(blogServer)
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'morrigan'
+            })
+        expect(userLogin.statusCode).toEqual(200)
+    })
+})
+
+describe('Blog testing', () => {
+    it('should create a new blog', async () => {
         const blogCreate = await request(blogServer)
             .post(`/api/blog`)
             .send({
                 title: 'Somewhere over the rainbow',
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         expect(blogCreate.statusCode).toEqual(201)
         expect(blogCreate.body.title).toBe('Somewhere over the rainbow')
-        expect(blogCreate.body.authorId).toBe(userCreate.body.id)
     })
     it('should not create a new blog without the required info', async () => {
         const randomString = new RandomString();
@@ -532,7 +540,7 @@ describe('Blog testing', () => {
             .patch('/api/blog/' + blogId + '/liked')
         const blogPopularity = await request(blogServer)
             .get('/api/blog/' + blogId + '/popularity')
-        const users = await request(userServer)
+        const users = await request(blogServer)
             .get('/api/users')
         const usersLength = users.body.length
         const specificBlog = await request(blogServer)
@@ -623,7 +631,13 @@ describe('Blog testing', () => {
 describe('Final DB delete', () => {
     afterAll(() => {
         blogServer.close()
-        userServer.close()
+        // userServer.close()
+    })
+    it('should logout a user', async () => {
+        const userLogout = await request(blogServer)
+            .post('/api/logout')
+        expect(userLogout.statusCode).toEqual(200)
+        expect(userLogout.text).toBe('Logout successful')
     })
     it('should delete all blog entries', async () => {
         const blogDelete = await request(blogServer)

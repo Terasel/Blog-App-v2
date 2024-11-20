@@ -3,7 +3,7 @@ import { prisma } from "../database/dbconnection"
 import bcrypt from 'bcrypt'
 
 interface userTemplate {
-    id: number,
+    id: string,
     name: string,
     password: string,
     email: string,
@@ -18,6 +18,14 @@ interface userCreated {
     role: string
 }
 
+interface userUpdate {
+    name: string,
+    email: string
+}
+
+interface userFind {
+    id: string
+}
 
 export class userModel {
     static async createUser(userCreate: userCreated) {
@@ -29,12 +37,12 @@ export class userModel {
 
         return newUser
     }
-    static async updateUser(userFind: userTemplate) {
+    static async updateUser(userFind: userFind, userUpdated: userUpdate) {
         const userUpdate = await prisma.user.update({
             where: {
                 id: +userFind.id
             },
-            data: userFind
+            data: userUpdated
         })
         return userUpdate
     }
@@ -42,7 +50,7 @@ export class userModel {
         const users = await prisma.user.findMany({})
         return users
     }
-    static async banUser(userFind: userTemplate) {
+    static async banUser(userFind: userFind) {
         const userBan = await prisma.user.update({
             where: {
                 id: +userFind.id,
@@ -54,7 +62,7 @@ export class userModel {
         })
         return userBan
     }
-    static async getUser(userFind: userTemplate) {
+    static async getUser(userFind: userFind) {
         const specificUser = await prisma.user.findFirst({
             where: {
                 id: +userFind.id
@@ -62,7 +70,7 @@ export class userModel {
         })
         return specificUser
     }
-    static async unbanUser(userFind: userTemplate) {
+    static async unbanUser(userFind: userFind) {
         const userBan = await prisma.user.update({
             where: {
                 id: +userFind.id,

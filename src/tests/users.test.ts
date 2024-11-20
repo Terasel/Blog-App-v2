@@ -189,14 +189,15 @@ describe('User testing', () => {
                 email: emailGen,
                 name: 'Canderous Ordo',
                 password: 'canderousordo',
-                role: 'admin',
-                banned: true
+                role: 'admin'
             })
         const userId = userCreate.body.id
         const userBan = await request(userServer)
+            .patch('/api/users/' + userId + '/ban')
+        const userUnban = await request(userServer)
             .patch('/api/users/' + userId + '/unban')
-        expect(userBan.statusCode).toEqual(200)
-        expect(userBan.body.banned).toBe(false)
+        expect(userUnban.statusCode).toEqual(200)
+        expect(userUnban.body.banned).toBe(false)
     })
     it('should not unban a user that does not exist', async () => {
         const randomString = new RandomString();
