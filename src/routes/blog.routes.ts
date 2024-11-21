@@ -108,22 +108,43 @@ router.post('/blog', blogServices.createBlog)
  * @swagger
  * /api/blog/{id}/liked:
  *  patch:
- *   summary: Like/dislike a blog
+ *   summary: Like a blog
  *   tags: [Blogs simpleUser]
  *   parameters:
  *    - $ref: '#/components/parameters/blogId'
  *   responses:
  *    200:
- *     description: The liked/disliked blog
+ *     description: The liked blog
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/Blog'
  *    400:
- *     description: This blog's liked status could not be updated
+ *     description: This blog could not be liked
  */
 
-// router.patch('/blog/:id/liked', blogServices.likeBlog)
+router.patch('/blog/:id/liked', blogServices.likeBlog)
+
+/**
+ * @swagger
+ * /api/blog/{id}/liked:
+ *  patch:
+ *   summary: Dislike a blog
+ *   tags: [Blogs simpleUser]
+ *   parameters:
+ *    - $ref: '#/components/parameters/blogId'
+ *   responses:
+ *    200:
+ *     description: The disliked blog
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Blog'
+ *    400:
+ *     description: This blog could not be disliked
+ */
+
+router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
 
 /**
  * @swagger
@@ -338,6 +359,8 @@ router.patch('/blog/:id/counter', blogServices.increaseCounter)
  */
 
 router.delete('/blog', blogServices.deleteAllBlogs)
-router.get('/blog/testing/:authorId', blogServices.testing)
+router.delete('/likes', blogServices.deleteAllLikes)
+router.get('/blog/testing', blogServices.testing)
+router.delete('/blog/testingtwo', blogServices.testingTwo)
 
 export default router

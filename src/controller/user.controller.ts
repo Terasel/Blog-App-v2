@@ -38,7 +38,7 @@ export const createUser: Handler = async (req, res) => {
         if (!newUser) throw 'Not created'
         res.status(201).send(newUser)
     } catch (err) {
-        if (err = 'Not created') res.status(422).send('This user could not be created')
+        if (err == 'Not created') res.status(422).send('This user could not be created')
     }
 }
 
@@ -52,8 +52,8 @@ export const updateUser: Handler = async (req, res) => {
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
-        if (err = 'No user') res.status(404).send('This user could not be found')
-        else if (err = 'Empty') res.status(400).send('This user could not be updated')
+        if (err == 'No user') res.status(404).send('This user could not be found')
+        else if (err == 'Empty') res.status(400).send('This user could not be updated')
     }
 }
 
@@ -63,7 +63,7 @@ export const getUsers: Handler = async (req, res) => {
         if (!users) throw 'No users'
         res.status(200).send(users)
     } catch (err) {
-        if (err = 'No users') res.status(404).send('No users could be found')
+        if (err == 'No users') res.status(404).send('No users could be found')
     }
 }
 
@@ -74,7 +74,7 @@ export const banUser: Handler = async (req, res) => {
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This user could not be banned')
+        if (err == 'Empty') res.status(400).send('This user could not be banned')
     }
 }
 
@@ -85,7 +85,7 @@ export const unbanUser: Handler = async (req, res) => {
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err = 'Empty') res.status(400).send('This user could not be unbanned')
+        if (err == 'Empty') res.status(400).send('This user could not be unbanned')
     }
 }
 
@@ -106,7 +106,7 @@ export const loginUser: Handler = async (req, res) => {
             .status(200)
             .send({ email: userLogin!.email })
     } catch (err) {
-        if (err = 'Invalid') res.status(400).send('The password and/or email address is incorrect')
+        if (err == 'Invalid') res.status(400).send('The password and/or email address is incorrect')
     }
 }
 
@@ -123,6 +123,6 @@ export const deleteAllUsers: Handler = async (req, res) => {
         if (!usersDelete) throw 'Undeletable'
         res.status(204).send(usersDelete)
     } catch (err) {
-        if (err = 'Undeletable') res.status(400).send('The users could not be deleted')
+        if (err == 'Undeletable') res.status(400).send('The users could not be deleted')
     }
 }

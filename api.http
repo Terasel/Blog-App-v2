@@ -42,7 +42,7 @@ POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
-"title": "dabadumbadumbalera33",
+"title": "Hallellujah",
 "content": "akngkjsebgesg"
 }
 
@@ -78,8 +78,7 @@ PATCH http://localhost:3000/api/blog/1557/recover
 
 ###
 
-PATCH http://localhost:3000/api/blog/1/liked
-
+PATCH http://localhost:3000/api/blog/1560/liked
 
 ###
 
@@ -118,37 +117,13 @@ DELETE http://localhost:3000/api/blog
 DELETE http://localhost:3000/api/users
 
 ###
-DELETE http://localhost:3020/api/blog
-
-###
-DELETE http://localhost:3020/api/users
-
-###
-DELETE http://localhost:3010/api/blog
-
-###
-DELETE http://localhost:3010/api/users
-
-###
-
-GET http://localhost:3020/api/users
-
-###
-
-GET http://localhost:3020/api/blog
-
-###
-
-GET http://localhost:3010/api/users
-
-###
-
-GET http://localhost:3010/api/blog
-
-###
 
 GET http://localhost:3000/api/blog/1558/popularity
 
 ###
 
-GET http://localhost:3000/api/blog/testing/2963
+GET http://localhost:3000/api/blog/testing
+
+###
+
+DELETE http://localhost:3000/api/likes

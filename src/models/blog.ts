@@ -19,6 +19,11 @@ interface blogUpdate {
     content: string
 }
 
+interface likeCreate {
+    blogId: number,
+    userId: number
+}
+
 
 
 export class blogModel {
@@ -30,36 +35,37 @@ export class blogModel {
         })
         return newBlog
     }
-    // static async likeBlog(reqLike: RequestedLiked) {
-    //     const blogLike = await prisma.blog.update({
-    //         where: {
-    //             id: +reqLike.id,
-    //             liked: false
-    //         },
-    //         data: {
-    //             liked: true,
-    //             likeCounter: {
-    //                 increment: 1
-    //             }
-    //         }
-    //     })
-    //     return blogLike
-    // }
-    // static async dislikeBlog(reqDislike: RequestedTwo) {
-    //     const blogLike = await prisma.blog.update({
-    //         where: {
-    //             id: +reqDislike.id,
-    //             liked: true
-    //         },
-    //         data: {
-    //             liked: false,
-    //             likeCounter: {
-    //                 increment: -1
-    //             }
-    //         }
-    //     })
-    //     return blogLike
-    // }
+    static async getLike(reqLike: likeCreate) {
+        const likeEntry = await prisma.likes.findFirst({
+            where: {
+                blogId: +reqLike.blogId,
+                userId: +reqLike.userId
+            }
+        })
+        return likeEntry
+    }
+    static async getLikes() {
+        const likes = await prisma.likes.findMany({})
+        return likes
+    }
+    static async likeBlog(reqLike: likeCreate) {
+        const likeEntry = await prisma.likes.create({
+            data: {
+                blogId: +reqLike.blogId,
+                userId: +reqLike.userId
+            }
+        })
+        return likeEntry
+    }
+    static async dislikeBlog(reqLike: likeCreate) {
+        const likeDelete = await prisma.likes.deleteMany({
+            where: {
+                blogId: +reqLike.blogId,
+                userId: +reqLike.userId
+            }
+        })
+        return likeDelete
+    }
     static async getBlogs() {
         const blogs = await prisma.blog.findMany({
             where: {
@@ -165,6 +171,11 @@ export class blogModel {
     static async deleteAllBlogs() {
         const blogDelete = await prisma.blog.deleteMany({})
         return blogDelete
+    }
+
+    static async deleteAllLikes() {
+        const likeDelete = await prisma.likes.deleteMany({})
+        return likeDelete
     }
 
     static async testing() {
