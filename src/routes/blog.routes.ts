@@ -230,7 +230,7 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
  *     description: This blog could not be deleted
  */
 
-router.patch('/blog/:id', blogServices.deleteBlog)
+router.patch('/blog/:id/delete', blogServices.deleteBlog)
 
 /**
  * @swagger
@@ -284,7 +284,7 @@ router.put('/blog/:id', blogServices.updateBlog)
  * @swagger
  * /api/blog/{id}/popularity:
  *  get:
- *    summary: Get a specific blog's popularity score
+ *    summary: Update a specific blog's popularity score
  *    tags: [Blogs simpleUser]
  *    parameters:
  *      - $ref: '#/components/parameters/blogId'
@@ -296,10 +296,10 @@ router.put('/blog/:id', blogServices.updateBlog)
  *            schema:
  *            $ref: '#/components/schemas/Blog'
  *      404:
- *        description: This blog could not be found
+ *        description: This blog's popularity could not be updated'
  */
 
-router.get('/blog/:id/popularity', blogServices.popularityScore)
+router.patch('/blog/:id/popularity', blogServices.popularityScore)
 
 // admin
 

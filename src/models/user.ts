@@ -27,6 +27,10 @@ interface userFind {
     id: string
 }
 
+interface userEmail {
+    email: string
+}
+
 export class userModel {
     static async createUser(userCreate: userCreated) {
         const hashedPassword = await bcrypt.hash(userCreate.password, 10)

@@ -6,6 +6,13 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+interface JwtPayload {
+    id: number,
+    name: string,
+    email: string,
+    role: string
+}
+
 interface userCreated {
     email: string,
     name: string,
@@ -34,10 +41,17 @@ interface userFind {
 export const createUser: Handler = async (req, res) => {
     try {
         const user: userCreated = { email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role }
+        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        if (!user.email.match(validRegex)) throw 'Invalid email'
+        if (typeof user.name != 'string') throw 'Invalid name'
+        if (user.role != 'admin' || 'simpleUser') throw 'Invalid user role'
         const newUser = await userModel.createUser(user)
         if (!newUser) throw 'Not created'
         res.status(201).send(newUser)
     } catch (err) {
+        if (err == 'Invalid email') res.status(400).send('This email is invalid')
+        if (err == 'Invalid name') res.status(400).send('This user name is invalid')
+        if (err == 'Invalid user role') res.status(400).send('This kind of user role is invalid')
         if (err == 'Not created') res.status(422).send('This user could not be created')
     }
 }
@@ -48,43 +62,60 @@ export const updateUser: Handler = async (req, res) => {
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
         const userU: userUpdate = { name: req.body.name, email: req.body.email }
+        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        if (!userU.email.match(validRegex)) throw 'Invalid email'
+        if (typeof userU.name != 'string') throw 'Invalid name'
         const userUpdate = await userModel.updateUser(userC, userU)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
         if (err == 'No user') res.status(404).send('This user could not be found')
+        if (err == 'Invalid email') res.status(400).send('This email is invalid')
+        if (err == 'Invalid name') res.status(400).send('This user name is invalid')
         else if (err == 'Empty') res.status(400).send('This user could not be updated')
     }
 }
 
 export const getUsers: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const users = await userModel.getUsers()
         if (!users) throw 'No users'
         res.status(200).send(users)
     } catch (err) {
+        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'No users') res.status(404).send('No users could be found')
     }
 }
 
 export const banUser: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
         const userBan = await userModel.banUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
+        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'Empty') res.status(400).send('This user could not be banned')
     }
 }
 
 export const unbanUser: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
+        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
         const userBan = await userModel.unbanUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
+        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'Empty') res.status(400).send('This user could not be unbanned')
     }
 }
@@ -92,6 +123,8 @@ export const unbanUser: Handler = async (req, res) => {
 export const loginUser: Handler = async (req, res) => {
     try {
         const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
+        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        if (!userC.email.match(validRegex)) throw 'Invalid email'
         const userLogin = await userModel.loginUser(userC)
         const isValid = await bcrypt.compare(req.body.password, userLogin!.password)
         if (!isValid) throw 'Invalid'
@@ -106,7 +139,8 @@ export const loginUser: Handler = async (req, res) => {
             .status(200)
             .send({ email: userLogin!.email })
     } catch (err) {
-        if (err == 'Invalid') res.status(400).send('The password and/or email address is incorrect')
+        if (err == 'Invalid email') res.status(400).send('This email is invalid')
+        if (err == 'Invalid') res.status(400).send('The password is incorrect')
     }
 }
 
@@ -121,7 +155,7 @@ export const deleteAllUsers: Handler = async (req, res) => {
     try {
         const usersDelete = await userModel.deleteAllUsers()
         if (!usersDelete) throw 'Undeletable'
-        res.status(204).send(usersDelete)
+        res.status(204).send('The users were deleted correctly')
     } catch (err) {
         if (err == 'Undeletable') res.status(400).send('The users could not be deleted')
     }

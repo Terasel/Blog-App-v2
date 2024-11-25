@@ -29,6 +29,7 @@ model Blog {
   updatedAt   DateTime @updatedAt
   likeCounter Int      @default(0)
   deleted     Boolean  @default(false)
+  popularity  String   @db.VarChar(255)
   author      User     @relation(fields: [authorId], references: [id])
   authorId    Int
   likes       Likes[]

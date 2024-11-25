@@ -3,7 +3,8 @@ import { prisma } from "../database/dbconnection"
 interface Requested {
     title: string,
     content: string,
-    authorId: number
+    authorId: number,
+    popularity: string
 }
 
 interface blogFind {
@@ -31,7 +32,7 @@ export class blogModel {
 
         const newBlog = await prisma.blog.create({
             data:
-                { title: reqCreate.title, content: reqCreate.content, authorId: reqCreate.authorId }
+                { title: reqCreate.title, content: reqCreate.content, authorId: reqCreate.authorId, popularity: reqCreate.popularity }
         })
         return newBlog
     }
@@ -66,6 +67,14 @@ export class blogModel {
         })
         return likeDelete
     }
+    static async deleteLikes(reqLike: blogFind) {
+        const likeDelete = await prisma.likes.deleteMany({
+            where: {
+                blogId: +reqLike.id
+            }
+        })
+        return likeDelete
+    }
     static async getBlogs() {
         const blogs = await prisma.blog.findMany({
             where: {
@@ -73,6 +82,18 @@ export class blogModel {
             },
             orderBy: {
                 createdAt: 'desc'
+            },
+            select: {
+                title: true,
+                content: true,
+                createdAt: true,
+                updatedAt: true,
+                popularity: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
         return blogs
@@ -81,6 +102,18 @@ export class blogModel {
         const specificBlog = await prisma.blog.findFirst({
             where: {
                 id: +reqId.id
+            },
+            select: {
+                title: true,
+                content: true,
+                createdAt: true,
+                updatedAt: true,
+                popularity: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
         return specificBlog
@@ -153,7 +186,15 @@ export class blogModel {
         })
         const likes = specificBlog!.likeCounter
         const popularity = (likes / (usersLength - 1)) * 100
-        return popularity
+        const popularityUpdate = await prisma.blog.update({
+            where: {
+                id: +reqId.id
+            },
+            data: {
+                popularity: popularity + '%'
+            }
+        })
+        return popularityUpdate
     }
     static async increaseCounter(reqId: blogFind) {
         const blogCounter = await prisma.blog.update({
@@ -163,6 +204,19 @@ export class blogModel {
             data: {
                 likeCounter: {
                     increment: 1
+                }
+            }
+        })
+        return blogCounter
+    }
+    static async decreaseCounter(reqId: blogFind) {
+        const blogCounter = await prisma.blog.update({
+            where: {
+                id: +reqId.id
+            },
+            data: {
+                likeCounter: {
+                    increment: -1
                 }
             }
         })

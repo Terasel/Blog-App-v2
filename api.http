@@ -1,21 +1,9 @@
-POST http://localhost:3000/api/users HTTP/1.1
-content-type: application/json
-
-{
-  "email": "livininthesunshine39@hotmail.com",
-  "name": "Tiny Tim22",
-  "password": "toodles22",
-  "role": "admin"
-}
-
-###
-
 POST http://localhost:3000/api/login HTTP/1.1
 content-type: application/json
 
 {
 
-"email": "livininthesunshine36@hotmail.com",
+"email": "livininthesunshine39@hotmail.com",
 "password": "toodles22"
 }
 
@@ -26,14 +14,14 @@ content-type: application/json
 
 ###
 
-POST http://localhost:3000/api/blog HTTP/1.1
+POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
-
 {
-"title": "cachislamarsalada",
-"content": "akngkjsebgesg",
-"authorId": 2866
+  "email": "deetznuts37@gmail.com",
+  "name": "Deetz Nuts5",
+  "password": "deetznuts",
+  "role": "simpleUser"
 }
 
 ### Con token
@@ -56,7 +44,19 @@ GET http://localhost:3000/api/blog
 
 ###
 
-PUT http://localhost:3000/api/blog/1557 HTTP/1.1
+GET http://localhost:3000/api/blog/1558
+
+###
+
+GET http://localhost:3000/api/blog/2963/byauthor
+
+###
+
+GET http://localhost:3000/api/blog/testing
+
+###
+
+PUT http://localhost:3000/api/blog/1562 HTTP/1.1
 content-type: application/json
 
 {
@@ -66,27 +66,7 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:3000/api/blog/1557
-
-###
-
-GET http://localhost:3000/api/blog/1558
-
-###
-
-PATCH http://localhost:3000/api/blog/1557/recover 
-
-###
-
-PATCH http://localhost:3000/api/blog/1560/liked
-
-###
-
-GET http://localhost:3000/api/blog/2963/byauthor
-
-###
-
-PUT http://localhost:3000/api/users/2800 HTTP/1.1
+PUT http://localhost:3000/api/users/2969 HTTP/1.1
 content-type: application/json
 
 {
@@ -96,11 +76,31 @@ content-type: application/json
 
 ###
 
-PATCH http://localhost:3000/api/users/2833/ban
+PATCH http://localhost:3000/api/blog/1562/popularity
 
 ###
 
-PATCH http://localhost:3000/api/users/2833/unban
+PATCH http://localhost:3000/api/blog/1557/delete
+
+###
+
+PATCH http://localhost:3000/api/blog/1557/recover 
+
+###
+
+PATCH http://localhost:3000/api/blog/1562/liked
+
+###
+
+PATCH http://localhost:3000/api/blog/1562/disliked
+
+###
+
+PATCH http://localhost:3000/api/users/2963/ban
+
+###
+
+PATCH http://localhost:3000/api/users/2963/unban
 
 ###
 
@@ -108,21 +108,13 @@ PATCH http://localhost:3000/api/blog/1558/counter
 
 ###
 
-DELETE http://localhost:3000/api/blog/1557/final
+DELETE http://localhost:3000/api/blog/1561/final
 
 ###
 DELETE http://localhost:3000/api/blog
 
 ###
 DELETE http://localhost:3000/api/users
-
-###
-
-GET http://localhost:3000/api/blog/1558/popularity
-
-###
-
-GET http://localhost:3000/api/blog/testing
 
 ###
 
