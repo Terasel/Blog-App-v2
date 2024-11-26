@@ -84,11 +84,13 @@ export class blogModel {
                 createdAt: 'desc'
             },
             select: {
+                id: true,
                 title: true,
                 content: true,
                 createdAt: true,
                 updatedAt: true,
                 popularity: true,
+                authorId: true,
                 author: {
                     select: {
                         name: true
@@ -104,11 +106,13 @@ export class blogModel {
                 id: +reqId.id
             },
             select: {
+                id: true,
                 title: true,
                 content: true,
                 createdAt: true,
                 updatedAt: true,
                 popularity: true,
+                authorId: true,
                 author: {
                     select: {
                         name: true

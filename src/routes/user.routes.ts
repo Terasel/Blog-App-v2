@@ -7,6 +7,95 @@ const router = Router();
  * @swagger
  * components:
  *  schemas:
+ *   UserBanned:
+ *    type: object
+ *    properties:
+ *     id:
+ *      type: integer
+ *      description: The user's id
+ *     email:
+ *      type: string
+ *      description: The user's email address
+ *     name:
+ *      type: string
+ *      description: The user's name
+ *     password:
+ *      type: string
+ *      description: The user's password (saved in encrpyted form)
+ *     bio:
+ *      type: string
+ *      description: The user's bio (optional)
+ *     role:
+ *      type: string
+ *      description: The user's role
+ *     banned:
+ *      type: boolean
+ *      description: The user's banned status
+ *    required:
+ *     - email
+ *     - name
+ *     - password
+ *     - role
+ *    example:
+ *     id: 414
+ *     email: livininthesunshine39@hotmail.com
+ *     name: Tiny Tim22
+ *     password: $2b$10$OfDKCoapu9ZIomJy9XDR2.TimbhAa8RrETzDgCSHn6.R3SGWaShh6
+ *     bio: We've known each other for so long
+ *     role: admin
+ *     banned: true
+ *   UserUpdate:
+ *    type: object
+ *    properties:
+ *     email:
+ *      type: string
+ *      description: The user's email address
+ *     name:
+ *      type: string
+ *      description: The user's name
+ *    example:
+ *     email: liviinthesunshine39@hotmail.com
+ *     name: Tiny Tim22
+ *   UserLogin:
+ *    type: object
+ *    properties:
+ *     email:
+ *      type: string
+ *      description: The user's email address
+ *     password:
+ *      type: string
+ *      description: The user's password (saved in encrpyted form)
+ *    required:
+ *     - email
+ *     - password
+ *    example:
+ *     email: livininthesunshine39@hotmail.com
+ *     password: toodles22
+ *   UserCreate:
+ *    type: object
+ *    properties:
+ *     email:
+ *      type: string
+ *      description: The user's email address
+ *     name:
+ *      type: string
+ *      description: The user's name
+ *     password:
+ *      type: string
+ *      description: The user's password (saved in encrpyted form)
+ *     role:
+ *      type: string
+ *      description: The user's role
+ *    required:
+ *     - email
+ *     - name
+ *     - password
+ *     - role
+ *    example:
+ *     email: livininthesunshine39@hotmail.com
+ *     name: Tiny Tim22
+ *     password: toodles22
+ *     role: admin
  *   User:
  *    type: object
  *    properties:
@@ -38,9 +127,9 @@ const router = Router();
  *     - role
  *    example:
  *     id: 414
- *     email: nevergonnagiveyouup@gmail.com
- *     name: Rick Astley
- *     password: youjustgotrickrolled
+ *     email: livininthesunshine39@hotmail.com
+ *     name: Tiny Tim22
+ *     password: $2b$10$OfDKCoapu9ZIomJy9XDR2.TimbhAa8RrETzDgCSHn6.R3SGWaShh6
  *     bio: We've known each other for so long
  *     role: admin
  *     banned: false
@@ -78,14 +167,15 @@ const router = Router();
  *    content:
  *     application/json:
  *      schema:
- *       $ref: '#/components/schemas/User'
+ *       $ref: '#/components/schemas/UserCreate'
  *   responses:
  *    201:
- *     description: User succesfully created
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/User'
+ *    400:
+ *     description: This email/user name/password/user role is invalid
  *    422:
  *     description: This user could not be created
  */
@@ -105,16 +195,17 @@ router.post('/users', userServices.createUser)
  *    content:
  *     application/json:
  *      schema:
- *       $ref: '#/components/schemas/User'
+ *       $ref: '#/components/schemas/UserUpdate'
  *   responses:
  *    200:
- *     description: The updated user
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/User'
  *    400:
- *     description: This user could not be updated
+ *     description: No ID is being sent || This email/user name is invalid || This user could not be updated  
+ *    404:
+ *     description: This user could not be found
  */
 
 router.put('/users/:id', userServices.updateUser)
@@ -156,7 +247,7 @@ router.get('/users', userServices.getUsers)
  *     content:
  *      application/json:
  *       schema:
- *        $ref: '#/components/schemas/User'
+ *        $ref: '#/components/schemas/UserBan'
  *    400:
  *     description: This user could not be banned
  */
@@ -195,14 +286,10 @@ router.patch('/users/:id/unban', userServices.unbanUser)
  *    content:
  *     application/json:
  *      schema:
- *       $ref: '#/components/schemas/User'
+ *       $ref: '#/components/schemas/UserLogin'
  *   responses:
- *    201:
+ *    200:
  *     description: User succesfully logged in
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/User'
  *    422:
  *     description: The password is incorrect
  */
@@ -215,19 +302,9 @@ router.post('/login', userServices.loginUser)
  *  post:
  *   summary: Logout a user
  *   tags: [Users simpleUser]
- *   requestBody:
- *    required: true
- *    content:
- *     application/json:
- *      schema:
- *       $ref: '#/components/schemas/User'
  *   responses:
  *    200:
  *     description: User succesfully logged out
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/User'
  */
 
 router.post('/logout', userServices.logoutUser)

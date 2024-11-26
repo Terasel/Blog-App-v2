@@ -3,8 +3,8 @@ content-type: application/json
 
 {
 
-"email": "livininthesunshine39@hotmail.com",
-"password": "toodles22"
+"email": "deetznuts33@gmail.com",
+"password": "deetznuts"
 }
 
 ###
@@ -18,8 +18,8 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "deetznuts37@gmail.com",
-  "name": "Deetz Nuts5",
+  "email": "nevergonnagiveyouup66@gmail.com",
+  "name": "Give you up345",
   "password": "deetznuts",
   "role": "simpleUser"
 }
@@ -44,11 +44,11 @@ GET http://localhost:3000/api/blog
 
 ###
 
-GET http://localhost:3000/api/blog/1558
+GET http://localhost:3000/api/blog/1563
 
 ###
 
-GET http://localhost:3000/api/blog/2963/byauthor
+GET http://localhost:3000/api/blog/2968/byauthor
 
 ###
 
@@ -70,8 +70,8 @@ PUT http://localhost:3000/api/users/2969 HTTP/1.1
 content-type: application/json
 
 {
-  "email":"toto67@gmail.com",
-  "name": "Big Sam"
+  "email":"anyway34@gmail.com",
+  "name": "Fat Man"
 }
 
 ###
@@ -80,11 +80,11 @@ PATCH http://localhost:3000/api/blog/1562/popularity
 
 ###
 
-PATCH http://localhost:3000/api/blog/1557/delete
+PATCH http://localhost:3000/api/blog/1563/delete
 
 ###
 
-PATCH http://localhost:3000/api/blog/1557/recover 
+PATCH http://localhost:3000/api/blog/1563/recover 
 
 ###
 

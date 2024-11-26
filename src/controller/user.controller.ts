@@ -44,14 +44,16 @@ export const createUser: Handler = async (req, res) => {
         const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
         if (!user.email.match(validRegex)) throw 'Invalid email'
         if (typeof user.name != 'string') throw 'Invalid name'
-        if (user.role != 'admin' || 'simpleUser') throw 'Invalid user role'
+        if (typeof user.password != 'string') throw 'Invalid password'
+        if (user.role != 'admin' && user.role != 'simpleUser') throw 'Invalid user role'
         const newUser = await userModel.createUser(user)
         if (!newUser) throw 'Not created'
         res.status(201).send(newUser)
     } catch (err) {
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
         if (err == 'Invalid name') res.status(400).send('This user name is invalid')
-        if (err == 'Invalid user role') res.status(400).send('This kind of user role is invalid')
+        if (err == 'Invalid password') res.status(400).send('This password is invalid')
+        if (err == 'Invalid user role') res.status(400).send('This user role is invalid')
         if (err == 'Not created') res.status(422).send('This user could not be created')
     }
 }
@@ -59,6 +61,7 @@ export const createUser: Handler = async (req, res) => {
 export const updateUser: Handler = async (req, res) => {
     try {
         const userC: userFind = { id: req.params.id }
+        if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
         const userU: userUpdate = { name: req.body.name, email: req.body.email }
@@ -69,6 +72,7 @@ export const updateUser: Handler = async (req, res) => {
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
+        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
         if (err == 'Invalid name') res.status(400).send('This user name is invalid')
@@ -79,12 +83,14 @@ export const updateUser: Handler = async (req, res) => {
 export const getUsers: Handler = async (req, res) => {
     try {
         const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
         if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const users = await userModel.getUsers()
         if (!users) throw 'No users'
         res.status(200).send(users)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'No users') res.status(404).send('No users could be found')
     }
@@ -93,14 +99,18 @@ export const getUsers: Handler = async (req, res) => {
 export const banUser: Handler = async (req, res) => {
     try {
         const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
         if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
+        if (userC.id == null) throw 'No ID'
         const userBan = await userModel.banUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
+        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'Empty') res.status(400).send('This user could not be banned')
     }
 }
@@ -108,14 +118,18 @@ export const banUser: Handler = async (req, res) => {
 export const unbanUser: Handler = async (req, res) => {
     try {
         const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
         if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
+        if (userC.id == null) throw 'No ID'
         const userBan = await userModel.unbanUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
+        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'Empty') res.status(400).send('This user could not be unbanned')
     }
 }
@@ -125,6 +139,7 @@ export const loginUser: Handler = async (req, res) => {
         const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
         const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
         if (!userC.email.match(validRegex)) throw 'Invalid email'
+        if (typeof userC.password != 'string') throw 'Invalid password'
         const userLogin = await userModel.loginUser(userC)
         const isValid = await bcrypt.compare(req.body.password, userLogin!.password)
         if (!isValid) throw 'Invalid'
@@ -134,13 +149,16 @@ export const loginUser: Handler = async (req, res) => {
             {
                 expiresIn: '1h'
             })
+        if (!token) throw 'No token'
         res
             .cookie('access_token', token, { httpOnly: true, secure: false })
             .status(200)
-            .send({ email: userLogin!.email })
+            .send('User successfully logged in')
     } catch (err) {
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
+        if (err == 'Invalid password') res.status(400).send('This password is invalid')
         if (err == 'Invalid') res.status(400).send('The password is incorrect')
+        if (err == 'No token') res.status(400).send('The token has not been created')
     }
 }
 

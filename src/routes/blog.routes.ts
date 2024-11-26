@@ -7,6 +7,60 @@ const router = Router();
  * @swagger
  * components:
  *  schemas:
+ *   BlogCreate:
+ *    type: object
+ *    properties:
+ *     title:
+ *      type: string
+ *      description: The blog's title
+ *     content:
+ *      type: string
+ *      description: The blog's content (optional)
+ *    required:
+ *     - title
+ *    example:
+ *     title: Somewhere over the rainbow
+ *     content: The sky's blue
+ *   BlogCreate2:
+ *    type: object
+ *    properties:
+ *     id:
+ *      type: integer
+ *      description: The blog's id
+ *     title:
+ *      type: string
+ *      description: The blog's title
+ *     content:
+ *      type: string
+ *      description: The blog's content (optional)
+ *     createdAt:
+ *      type: string
+ *      description: The time the blog was created at
+ *     updatedAt:
+ *      type: string
+ *      description: The time the blog was last updated at
+ *     likeCounter:
+ *      type: integer
+ *      description: The amount of likes a blog has
+ *     deleted:
+ *      type: boolean
+ *      desription: The blog's deleted status
+ *     popularity:
+ *      type: string
+ *      description: The blog's popularity
+ *     authorId:
+ *      type: integer
+ *      description: The blog's author's id
+ *    example:
+ *     id: 205
+ *     title: The last time I ate pie
+ *     content: It was delicious
+ *     createdAt: 2024-10-24T09:11:07.989Z
+ *     updatedAt: 2024-10-24T09:11:07.989Z
+ *     likeCounter: 0
+ *     deleted: false
+ *     popularity: 50%
+ *     authorId: 30
  *   Blog:
  *    type: object
  *    properties:
@@ -25,18 +79,15 @@ const router = Router();
  *     updatedAt:
  *      type: string
  *      description: The time the blog was last updated at
- *     liked:
- *      type: boolean
- *      description: The blog's liked status
- *     likeCounter:
- *      type: integer
- *      description: The blog's like counter
- *     deleted:
- *      type: boolean
- *      description: The blog's deleted status
  *     authorId:
  *      type: integer
  *      description: The blog's author's id
+ *     author:
+ *      type: string
+ *      description: The blog's author's name
+ *     popularity:
+ *      type: string
+ *      description: The blog's popularity
  *    required:
  *     - title
  *     - authorId
@@ -46,10 +97,11 @@ const router = Router();
  *     content: It was delicious
  *     createdAt: 2024-10-24T09:11:07.989Z
  *     updatedAt: 2024-10-24T09:11:07.989Z
- *     liked: false
- *     likeCounter: 0
- *     deleted: false
+ *     popularity: 50%
  *     authorId: 30
+ *     author: {
+ *      "name": "Tiny Tim22"
+ *     }
  *  parameters:
  *   blogId:
  *    in: path
@@ -90,14 +142,14 @@ const router = Router();
  *    content:
  *     application/json:
  *      schema:
- *       $ref: '#/components/schemas/Blog'
+ *       $ref: '#/components/schemas/BlogCreate'
  *   responses:
  *    201:
  *     description: Blog succesfully created
  *     content:
  *      application/json:
  *       schema:
- *        $ref: '#/components/schemas/Blog'
+ *        $ref: '#/components/schemas/BlogCreate2'
  *    422:
  *     description: This blog could not be created
  */
@@ -114,11 +166,7 @@ router.post('/blog', blogServices.createBlog)
  *    - $ref: '#/components/parameters/blogId'
  *   responses:
  *    200:
- *     description: The liked blog
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/Blog'
+ *     description: The blog was liked correctly
  *    400:
  *     description: This blog could not be liked
  */
@@ -127,7 +175,7 @@ router.patch('/blog/:id/liked', blogServices.likeBlog)
 
 /**
  * @swagger
- * /api/blog/{id}/liked:
+ * /api/blog/{id}/disliked:
  *  patch:
  *   summary: Dislike a blog
  *   tags: [Blogs simpleUser]
@@ -136,10 +184,6 @@ router.patch('/blog/:id/liked', blogServices.likeBlog)
  *   responses:
  *    200:
  *     description: The disliked blog
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/Blog'
  *    400:
  *     description: This blog could not be disliked
  */
@@ -192,7 +236,7 @@ router.get('/blog/:id', blogServices.getBlog)
  * @swagger
  * /api/blog/{authorId}/byauthor:
  *  get:
- *    summary: Get all blogs from a specific author
+ *    summary: Get all blogs from a specific author (thas is logged in)
  *    tags: [Blogs simpleUser]
  *    parameters:
  *      - $ref: '#/components/parameters/authorId'
@@ -204,7 +248,7 @@ router.get('/blog/:id', blogServices.getBlog)
  *           schema:
  *            type: array
  *            items:
- *             $ref: '#/components/schemas/Blog'
+ *             $ref: '#/components/schemas/BlogCreate2'
  *      404:
  *        description: No blogs from this author could be found
  */
@@ -213,7 +257,7 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
 
 /**
  * @swagger
- * /api/blog/{id}:
+ * /api/blog/{id}/delete:
  *  patch:
  *   summary: Soft delete a blog
  *   tags: [Blogs simpleUser]
@@ -221,11 +265,7 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
  *    - $ref: '#/components/parameters/blogId'
  *   responses:
  *    204:
- *     description: The deleted blog
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/Blog'
+ *     description: The blog was deleted correctly
  *    400:
  *     description: This blog could not be deleted
  */
@@ -246,7 +286,7 @@ router.patch('/blog/:id/delete', blogServices.deleteBlog)
  *     content:
  *      application/json:
  *       schema:
- *        $ref: '#/components/schemas/Blog'
+ *        $ref: '#/components/schemas/BlogCreate2'
  *    400:
  *     description: This blog could not be recovered
  */
@@ -266,14 +306,14 @@ router.patch('/blog/:id/recover', blogServices.recoverBlog)
  *    content:
  *     application/json:
  *      schema:
- *       $ref: '#/components/schemas/Blog'
+ *       $ref: '#/components/schemas/BlogCreate'
  *   responses:
  *    200:
  *     description: The updated blog
  *     content:
  *      application/json:
  *       schema:
- *        $ref: '#/components/schemas/Blog'
+ *        $ref: '#/components/schemas/BlogCreate2'
  *    400:
  *     description: This blog could not be updated
  */
@@ -283,18 +323,14 @@ router.put('/blog/:id', blogServices.updateBlog)
 /**
  * @swagger
  * /api/blog/{id}/popularity:
- *  get:
+ *  patch:
  *    summary: Update a specific blog's popularity score
  *    tags: [Blogs simpleUser]
  *    parameters:
  *      - $ref: '#/components/parameters/blogId'
  *    responses:
  *      200:
- *        description: The requested blog's popularity score
- *        content:
- *          application/json:
- *            schema:
- *            $ref: '#/components/schemas/Blog'
+ *        description: Popularity updated
  *      404:
  *        description: This blog's popularity could not be updated'
  */
@@ -323,28 +359,6 @@ router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
 
 // dev
 
-
-/**
- * @swagger
- * /api/blog/{id}/counter:
- *  patch:
- *   summary: Increase a blog's like counter
- *   tags: [Blogs dev]
- *   parameters:
- *    - $ref: '#/components/parameters/blogId'
- *   responses:
- *    200:
- *     description: The blog with the increased like counter
- *     content:
- *      application/json:
- *       schema:
- *        $ref: '#/components/schemas/Blog'
- *    400:
- *     description: This blog's like counter could not be increased
- */
-
-router.patch('/blog/:id/counter', blogServices.increaseCounter)
-
 /**
  * @swagger
  * /api/blog:
@@ -359,8 +373,20 @@ router.patch('/blog/:id/counter', blogServices.increaseCounter)
  */
 
 router.delete('/blog', blogServices.deleteAllBlogs)
+
+/**
+ * @swagger
+ * /api/likes:
+ *  delete:
+ *   summary: Delete all likes in the database
+ *   tags: [Blogs dev]
+ *   responses:
+ *    204:
+ *     description: The likes were deleted
+ *    400:
+ *     description: The likes could not be deleted
+ */
+
 router.delete('/likes', blogServices.deleteAllLikes)
-router.get('/blog/testing', blogServices.testing)
-router.delete('/blog/testingtwo', blogServices.testingTwo)
 
 export default router
