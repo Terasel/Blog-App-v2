@@ -220,13 +220,16 @@ router.put('/users/:id', userServices.updateUser)
  *   tags: [Users admin]
  *   responses:
  *    200:
- *     description: The user list
  *     content:
  *      application/json:
  *       schema:
  *        type: array
  *        items:
  *         $ref: '#/components/schemas/User'
+ *    400:
+ *     description: There is no cookie or token
+ *    401:
+ *     description: The user does not have the necessary access level
  *    404:
  *     description: No users could be found 
  */
@@ -243,13 +246,16 @@ router.get('/users', userServices.getUsers)
  *    - $ref: '#/components/parameters/userId'
  *   responses:
  *    200:
- *     description: The banned user
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/UserBan'
  *    400:
- *     description: This user could not be banned
+ *     description: There is no cookie or token/No ID is being sent/This user is already banned/This user could not be banned
+ *    401:
+ *     description: The user does not have the necessary access level
+ *    404:
+ *     description: This user could not be found
  */
 
 router.patch('/users/:id/ban', userServices.banUser)
@@ -264,13 +270,16 @@ router.patch('/users/:id/ban', userServices.banUser)
  *    - $ref: '#/components/parameters/userId'
  *   responses:
  *    200:
- *     description: The unbanned user
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/User'
  *    400:
- *     description: This user could not be unbanned
+ *     description: There is no cookie or token/No ID is being sent/This user is not banned/This user could not be unbanned
+ *    401:
+ *     description: The user does not have the necessary access level
+ *    404:
+ *     description: This user could not be found
  */
 
 router.patch('/users/:id/unban', userServices.unbanUser)
@@ -290,8 +299,8 @@ router.patch('/users/:id/unban', userServices.unbanUser)
  *   responses:
  *    200:
  *     description: User succesfully logged in
- *    422:
- *     description: The password is incorrect
+ *    400:
+ *     description: This email is invalid/This password is invalid/The password is incorrect/The token has not been created
  */
 
 router.post('/login', userServices.loginUser)
@@ -304,7 +313,7 @@ router.post('/login', userServices.loginUser)
  *   tags: [Users simpleUser]
  *   responses:
  *    200:
- *     description: User succesfully logged out
+ *     description: Logout successful
  */
 
 router.post('/logout', userServices.logoutUser)
@@ -320,7 +329,7 @@ router.post('/logout', userServices.logoutUser)
  *   tags: [Users dev]
  *   responses:
  *    204:
- *     description: The users were deleted
+ *     description: The users were deleted correctly
  *    400:
  *     description: The users could not be deleted
  */

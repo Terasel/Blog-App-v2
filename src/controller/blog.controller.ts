@@ -131,7 +131,7 @@ export const dislikeBlog: Handler = async (req, res) => {
         if (err == 'No ID like') res.status(400).send('No ID is being sent on like request')
         if (err == 'No Author ID like') res.status(400).send('No Author ID is being sent on like request')
         if (err == 'Non-existing like') res.status(400).send('The like does not exist')
-        if (err == 'Undislikable') res.status(422).send('The like could not be reverted')
+        if (err == 'Undislikable') res.status(400).send('The like could not be reverted')
         if (err == 'Counter not decreased') res.status(400).send('The dislike could not be counted properly')
         if (err == 'Popularity not calculated') res.status(400).send('The popularity could not be calculated')
     }

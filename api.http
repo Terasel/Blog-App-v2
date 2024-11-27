@@ -3,8 +3,8 @@ content-type: application/json
 
 {
 
-"email": "deetznuts33@gmail.com",
-"password": "deetznuts"
+"email": "livininthesunshine39@hotmail.com",
+"password": "toodles22"
 }
 
 ###
@@ -18,10 +18,10 @@ POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "nevergonnagiveyouup66@gmail.com",
-  "name": "Give you up345",
-  "password": "deetznuts",
-  "role": "simpleUser"
+  "email": "livininthesunshine39@hotmail.com",
+  "name": "Tiny Tim22",
+  "password": "toodles22",
+  "role": "admin"
 }
 
 ### Con token
@@ -96,11 +96,11 @@ PATCH http://localhost:3000/api/blog/1562/disliked
 
 ###
 
-PATCH http://localhost:3000/api/users/2963/ban
+PATCH http://localhost:3000/api/users/3066/ban
 
 ###
 
-PATCH http://localhost:3000/api/users/2963/unban
+PATCH http://localhost:3000/api/users/3066/unban
 
 ###
 

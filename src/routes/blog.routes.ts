@@ -145,11 +145,12 @@ const router = Router();
  *       $ref: '#/components/schemas/BlogCreate'
  *   responses:
  *    201:
- *     description: Blog succesfully created
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/BlogCreate2'
+ *    400:
+ *     description: There is no cookie or token/This title is invalid/This content is invalid/No Author ID is being sent
  *    422:
  *     description: This blog could not be created
  */
@@ -168,7 +169,13 @@ router.post('/blog', blogServices.createBlog)
  *    200:
  *     description: The blog was liked correctly
  *    400:
- *     description: This blog could not be liked
+ *     description: There is no cookie or token/No Author ID is being sent on author verification/No ID is being sent on blog verification/
+ *                  A user cannot like their own post/No ID is being sent on like request/No Author ID is being sent on like request/
+ *                  The like already exists/The like could not be counted properly/The popularity could not be calculated
+ *    404:
+ *     description: The user does not exist/The blog does not exist
+ *    422:
+ *     description: The like could not be created
  */
 
 router.patch('/blog/:id/liked', blogServices.likeBlog)
@@ -182,10 +189,14 @@ router.patch('/blog/:id/liked', blogServices.likeBlog)
  *   parameters:
  *    - $ref: '#/components/parameters/blogId'
  *   responses:
- *    200:
- *     description: The disliked blog
+ *    204:
+ *     description: The blog was disliked correctly
  *    400:
- *     description: This blog could not be disliked
+ *     description: There is no cookie or token/No Author ID is being sent on author verification/No ID is being sent on blog verification/
+ *                  No ID is being sent on like request/No Author ID is being sent on like request/The like does not exist/The like could not be reverted/
+ *                  The dislike could not be counted properly/The popularity could not be calculated
+ *    404:
+ *     description: The user does not exist/The blog does not exist
  */
 
 router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
@@ -198,7 +209,6 @@ router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
  *   tags: [Blogs simpleUser]
  *   responses:
  *    200:
- *     description: The blog list, ordered by creation date (most recent on top)
  *     content:
  *      application/json:
  *       schema:
@@ -215,19 +225,20 @@ router.get('/blog', blogServices.getBlogs)
  * @swagger
  * /api/blog/{id}:
  *  get:
- *    summary: Get a specific blog
- *    tags: [Blogs simpleUser]
- *    parameters:
- *      - $ref: '#/components/parameters/blogId'
- *    responses:
- *      200:
- *        description: The requested blog
- *        content:
- *          application/json:
- *            schema:
- *            $ref: '#/components/schemas/Blog'
- *      404:
- *        description: This blog could not be found
+ *   summary: Get a specific blog
+ *   tags: [Blogs simpleUser]
+ *   parameters:
+ *    - $ref: '#/components/parameters/blogId'
+ *   responses:
+ *    200:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Blog'
+ *    400:
+ *     description: No ID is being sent
+ *    404:
+ *     description: This blog could not be found
  */
 
 router.get('/blog/:id', blogServices.getBlog)
@@ -236,21 +247,22 @@ router.get('/blog/:id', blogServices.getBlog)
  * @swagger
  * /api/blog/{authorId}/byauthor:
  *  get:
- *    summary: Get all blogs from a specific author (thas is logged in)
- *    tags: [Blogs simpleUser]
- *    parameters:
- *      - $ref: '#/components/parameters/authorId'
- *    responses:
- *      200:
- *        description: The requested blogs
- *        content:
- *          application/json:
- *           schema:
- *            type: array
- *            items:
- *             $ref: '#/components/schemas/BlogCreate2'
- *      404:
- *        description: No blogs from this author could be found
+ *   summary: Get all blogs from a specific author (thas is logged in)
+ *   tags: [Blogs simpleUser]
+ *   parameters:
+ *    - $ref: '#/components/parameters/authorId'
+ *   responses:
+ *    200:
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: array
+ *        items:
+ *         $ref: '#/components/schemas/BlogCreate2'
+ *    400:
+ *     description: There is no cookie or token/No Author ID is being sent
+ *    404:
+ *     description: This user does not exist/No blogs from this author could be found
  */
 
 router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
@@ -267,7 +279,11 @@ router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
  *    204:
  *     description: The blog was deleted correctly
  *    400:
- *     description: This blog could not be deleted
+ *     description: There is no cookie or token/No Author ID is being sent/No ID is being sent/This blog could not be deleted
+ *    401:
+ *     description: A user can only delete their own posts
+ *    404:
+ *     description: The blog does not exist
  */
 
 router.patch('/blog/:id/delete', blogServices.deleteBlog)
@@ -282,13 +298,16 @@ router.patch('/blog/:id/delete', blogServices.deleteBlog)
  *    - $ref: '#/components/parameters/blogId'
  *   responses:
  *    200:
- *     description: The recovered blog
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/BlogCreate2'
  *    400:
- *     description: This blog could not be recovered
+ *     description: There is no cookie or token/No Author ID is being sent/No ID is being sent/This blog could not be recovered
+ *    401:
+ *     description: A user can only recover their own posts
+ *    404:
+ *     description: The blog does not exist
  */
 
 router.patch('/blog/:id/recover', blogServices.recoverBlog)
@@ -309,13 +328,14 @@ router.patch('/blog/:id/recover', blogServices.recoverBlog)
  *       $ref: '#/components/schemas/BlogCreate'
  *   responses:
  *    200:
- *     description: The updated blog
  *     content:
  *      application/json:
  *       schema:
  *        $ref: '#/components/schemas/BlogCreate2'
  *    400:
- *     description: This blog could not be updated
+ *     description: No ID is being sent/This title is invalid/This content is invalid/This blog could not be updated
+ *    404:
+ *     description: This blog could not be found
  */
 
 router.put('/blog/:id', blogServices.updateBlog)
@@ -331,8 +351,8 @@ router.put('/blog/:id', blogServices.updateBlog)
  *    responses:
  *      200:
  *        description: Popularity updated
- *      404:
- *        description: This blog's popularity could not be updated'
+ *      400:
+ *        description: No ID is being sent/This blog's popularity could not be updated
  */
 
 router.patch('/blog/:id/popularity', blogServices.popularityScore)
@@ -344,15 +364,17 @@ router.patch('/blog/:id/popularity', blogServices.popularityScore)
  * @swagger
  * /api/blog/{id}/final:
  *  delete:
- *    summary: Irreversibly delete a specific blog
- *    tags: [Blogs admin]
- *    parameters:
- *      - $ref: '#/components/parameters/blogId'
- *    responses:
- *      204:
- *        description: The blog was deleted
- *      400:
- *        description: This blog could not be completely deleted
+ *   summary: Irreversibly delete a specific blog
+ *   tags: [Blogs admin]
+ *   parameters:
+ *    - $ref: '#/components/parameters/blogId'
+ *   responses:
+ *    204:
+ *     description: The blog was completely deleted correctly
+ *    400:
+ *     description: There is no cookie or token/No ID is being sent/The likes from this blog could not be completely deleted/This blog could not be completely deleted
+ *    401:
+ *     description: The user does not have the necessary access level
  */
 
 router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
@@ -367,7 +389,7 @@ router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
  *   tags: [Blogs dev]
  *   responses:
  *    204:
- *     description: The blogs were deleted
+ *     description: The blogs were deleted correctly
  *    400:
  *     description: The blogs could not be deleted
  */
@@ -382,7 +404,7 @@ router.delete('/blog', blogServices.deleteAllBlogs)
  *   tags: [Blogs dev]
  *   responses:
  *    204:
- *     description: The likes were deleted
+ *     description: The likes were deleted correctly
  *    400:
  *     description: The likes could not be deleted
  */
