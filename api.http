@@ -1,23 +1,37 @@
+POST http://localhost:3000/api/login HTTP/1.1
+content-type: application/json
+
+{
+
+"email": "livininthesunshine39@hotmail.com",
+"password": "toodles22"
+}
+
+###
+
+POST http://localhost:3000/api/logout HTTP/1.1
+content-type: application/json
+
+###
+
 POST http://localhost:3000/api/users HTTP/1.1
 content-type: application/json
 
 {
-  "email": "livininthesunshine35@hotmail.com",
+  "email": "livininthesunshine39@hotmail.com",
   "name": "Tiny Tim22",
   "password": "toodles22",
   "role": "admin"
 }
 
-###
+### Con token
 
 POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
-
-"title": "esquenose",
-"authorId": 1715
-
+"title": "Hallellujah",
+"content": "akngkjsebgesg"
 }
 
 ###
@@ -30,59 +44,71 @@ GET http://localhost:3000/api/blog
 
 ###
 
-PUT http://localhost:3000/api/blog/2 HTTP/1.1
+GET http://localhost:3000/api/blog/1563
+
+###
+
+GET http://localhost:3000/api/blog/2968/byauthor
+
+###
+
+GET http://localhost:3000/api/blog/testing
+
+###
+
+PUT http://localhost:3000/api/blog/1562 HTTP/1.1
 content-type: application/json
 
 {
-  "title": "and in the darkness bind them?"
+  "title": "Rickrolled",
+  "content": "never gonna get you down"
 }
 
 ###
 
-DELETE http://localhost:3000/api/blog/7
-
-###
-
-GET http://localhost:3000/api/blog/1
-
-###
-
-PATCH http://localhost:3000/api/blog/7/recover 
-
-###
-
-PATCH http://localhost:3000/api/blog/1/liked
-
-
-###
-
-GET http://localhost:3000/api/blog/1714/byauthor
-
-###
-
-PUT http://localhost:3000/api/users/48 HTTP/1.1
+PUT http://localhost:3000/api/users/2969 HTTP/1.1
 content-type: application/json
 
 {
-  "email":"toto67@gmail.com",
-  "name": "Big Sam"
+  "email":"anyway34@gmail.com",
+  "name": "Fat Man"
 }
 
 ###
 
-PATCH http://localhost:3000/api/users/1/ban
+PATCH http://localhost:3000/api/blog/1562/popularity
 
 ###
 
-PATCH http://localhost:3000/api/users/1/unban
+PATCH http://localhost:3000/api/blog/1563/delete
 
 ###
 
-PATCH http://localhost:3000/api/blog/300/counter
+PATCH http://localhost:3000/api/blog/1563/recover 
 
 ###
 
-DELETE http://localhost:3000/api/blog/9/final
+PATCH http://localhost:3000/api/blog/1562/liked
+
+###
+
+PATCH http://localhost:3000/api/blog/1562/disliked
+
+###
+
+PATCH http://localhost:3000/api/users/3066/ban
+
+###
+
+PATCH http://localhost:3000/api/users/3066/unban
+
+###
+
+PATCH http://localhost:3000/api/blog/1558/counter
+
+###
+
+DELETE http://localhost:3000/api/blog/1561/final
 
 ###
 DELETE http://localhost:3000/api/blog
@@ -91,37 +117,5 @@ DELETE http://localhost:3000/api/blog
 DELETE http://localhost:3000/api/users
 
 ###
-DELETE http://localhost:3020/api/blog
 
-###
-DELETE http://localhost:3020/api/users
-
-###
-DELETE http://localhost:3010/api/blog
-
-###
-DELETE http://localhost:3010/api/users
-
-###
-
-GET http://localhost:3020/api/users
-
-###
-
-GET http://localhost:3020/api/blog
-
-###
-
-GET http://localhost:3010/api/users
-
-###
-
-GET http://localhost:3010/api/blog
-
-###
-
-GET http://localhost:3000/api/blog/300/popularity
-
-###
-
-GET http://localhost:3000/api/blog/testing
+DELETE http://localhost:3000/api/likes

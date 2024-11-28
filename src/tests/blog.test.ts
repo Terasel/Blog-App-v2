@@ -1,129 +1,157 @@
 import { blogServer } from '../server/blogTestingServer'
-import { userServer } from '../server/usersTestingServer'
 import request from 'supertest'
 import { RandomString } from "ts-randomstring/lib"
+import supertest from 'supertest'
+
+const agent = supertest.agent(blogServer)
+
+describe('Starting DB delete', () => {
+    it('should delete all entries in all tables', async () => {
+        const likesDelete = await agent
+            .delete('/api/likes')
+        const blogDelete = await agent
+            .delete('/api/blog')
+        const usersDelete = await agent
+            .delete('/api/users')
+        expect(likesDelete.statusCode).toEqual(204)
+        expect(blogDelete.statusCode).toEqual(204)
+        expect(usersDelete.statusCode).toEqual(204)
+    })
+})
 
 describe('Blog testing', () => {
-    it('should create a new blog', async () => {
+    it('should login a user', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Mission Vao',
-                password: 'missionvao',
-                role: 'admin'
+                name: 'Morrigan',
+                password: 'morrigan',
+                role: 'simpleUser'
             })
-        const blogCreate = await request(blogServer)
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'morrigan'
+            })
+        expect(userLogin.statusCode).toEqual(200)
+        expect(userLogin.text).toBe('User successfully logged in')
+    })
+    it('should create a new blog', async () => {
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: 'Somewhere over the rainbow',
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         expect(blogCreate.statusCode).toEqual(201)
         expect(blogCreate.body.title).toBe('Somewhere over the rainbow')
-        expect(blogCreate.body.authorId).toBe(userCreate.body.id)
     })
     it('should not create a new blog without the required info', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Vette',
-                password: 'vette',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
-        expect(blogCreate.statusCode).toEqual(422)
-        expect(blogCreate.text).toBe('This blog could not be created')
+        expect(blogCreate.statusCode).toEqual(400)
+        expect(blogCreate.text).toBe('This title is invalid')
     })
     it('should like a blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Zaalbar',
-                password: 'zaalbar',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: 'Way up high',
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
-            .patch('/api/blog/' + blogId + '/liked')
-        expect(blogLike.statusCode).toEqual(200)
-        expect(blogLike.body.liked).toBe(true)
-    })
-    it('should not like a blog that does not exist', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Bowdaar',
-                password: 'bowdaar',
-                role: 'admin'
+                name: 'Mythal',
+                password: 'mythal',
+                role: 'simpleUser'
             })
-        const blogCreate = await request(blogServer)
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'mythal'
+            })
+        const blogLike = await agent
+            .patch('/api/blog/' + blogId + '/liked')
+        expect(blogLike.statusCode).toEqual(200)
+        expect(blogLike.text).toBe('The blog was liked correctly')
+    })
+    it('a user should not be able to like their own blog', async () => {
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: 'Way up high?',
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
-            .patch('/api/blog/' + (blogId + 55) + '/liked')
+        const blogLike = await agent
+            .patch('/api/blog/' + blogId + '/liked')
         expect(blogLike.statusCode).toEqual(400)
-        expect(blogLike.text).toBe("This blog's liked status could not be updated")
+        expect(blogLike.text).toBe('A user cannot like their own post')
     })
     it('should revert the like on a blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Handmaiden',
-                password: 'handmaiden',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "There's a land that I heard of",
-                authorId: userCreate.body.id,
-                liked: true
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
-            .patch('/api/blog/' + blogId + '/liked')
-        expect(blogLike.statusCode).toEqual(200)
-        expect(blogLike.body.liked).toBe(false)
-    })
-    it('should not revert the like on a blog that does not exist', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Solas',
+                password: 'solas',
+                role: 'admin'
+            })
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'solas'
+            })
+        const blogLike = await agent
+            .patch('/api/blog/' + blogId + '/liked')
+        const blogDislike = await agent
+            .patch('/api/blog/' + blogId + '/disliked')
+        expect(blogDislike.statusCode).toEqual(204)
+    })
+    it('should not revert the like on a blog that has not been previously liked', async () => {
+        const blogCreate = await agent
+            .post(`/api/blog`)
+            .send({
+                title: "There's a land that I heard of?",
+                content: 'whoknows'
+            })
+        const blogId = blogCreate.body.id
+        const userLogout = await agent
+            .post('/api/logout')
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
@@ -131,18 +159,16 @@ describe('Blog testing', () => {
                 password: 'atris',
                 role: 'admin'
             })
-        const blogCreate = await request(blogServer)
-            .post(`/api/blog`)
+        const userLogin = await agent
+            .post('/api/login')
             .send({
-                title: "There's a land that I heard of?",
-                authorId: userCreate.body.id,
-                liked: true
+                email: emailGen,
+                password: 'atris'
             })
-        const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
-            .patch('/api/blog/' + (blogId + 55) + '/liked')
+        const blogLike = await agent
+            .patch('/api/blog/' + blogId + '/disliked')
         expect(blogLike.statusCode).toEqual(400)
-        expect(blogLike.text).toBe("This blog's liked status could not be updated")
+        expect(blogLike.text).toBe('The like does not exist')
     })
     it('should get all blogs, with the most recent at the top of the list', async () => {
         const blogsGet = await request(blogServer)
@@ -155,58 +181,38 @@ describe('Blog testing', () => {
         expect(blogsGet.body[4].title).toBe('Somewhere over the rainbow')
     })
     it('should get a specific blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Visas Marr',
-                password: 'visasmarr',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Once in a lullaby",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogGet = await request(blogServer)
+        const blogGet = await agent
             .get('/api/blog/' + blogId)
         expect(blogGet.statusCode).toEqual(200)
         expect(blogGet.body.title).toBe("Once in a lullaby")
     })
     it('should not get a blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Null',
-                password: 'darthnull',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Once in a lullaby?",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogGet = await request(blogServer)
+        const blogGet = await agent
             .get('/api/blog/' + (blogId + 55))
         expect(blogGet.statusCode).toEqual(404)
         expect(blogGet.text).toBe('This blog could not be found')
     })
     it('should get the blogs from a specific author, with the most recent at the top of the list', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
@@ -214,86 +220,68 @@ describe('Blog testing', () => {
                 password: 'baodur',
                 role: 'admin'
             })
-        const userCreate2 = await request(blogServer)
-            .post('/api/users')
+        const userLogin = await agent
+            .post('/api/login')
             .send({
                 email: emailGen,
-                name: 'G0-T0',
-                password: 'g0t0',
-                role: 'admin'
+                password: 'baodur'
             })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Somewhere over the rainbow?",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
-        const blogCreate2 = await request(blogServer)
-            .post(`/api/blog`)
-            .send({
-                title: "Somewhere over the rainbow!",
-                authorId: userCreate2.body.id
-            })
-        const blogCreate3 = await request(blogServer)
+        const blogCreate2 = await agent
             .post(`/api/blog`)
             .send({
                 title: "Skies are blue",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
-        const blogGetbyAuthor = await request(blogServer)
-            .get('/api/blog/' + blogCreate.body.authorId + '/byauthor')
+        const blogGetbyAuthor = await agent
+            .get('/api/blog/' + userCreate.body.id + '/byauthor')
         expect(blogGetbyAuthor.statusCode).toEqual(200)
         expect(blogGetbyAuthor.body[0].title).toBe("Skies are blue")
         expect(blogGetbyAuthor.body[1].title).toBe("Somewhere over the rainbow?")
     })
-    it('should not get the blogs from an author that does not exist', async () => {
+    it('should not get the blogs from an author that is not logged in', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Bao Dur',
-                password: 'baodur',
+                name: 'Elgarnan',
+                password: 'elgarnan',
                 role: 'admin'
             })
-        const userCreate2 = await request(blogServer)
-            .post('/api/users')
+        const userLogin = await agent
+            .post('/api/login')
             .send({
                 email: emailGen,
-                name: 'G0-T0',
-                password: 'g0t0',
-                role: 'admin'
+                password: 'elgarnan'
             })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Somewhere over the rainbow?",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
-        const blogCreate2 = await request(blogServer)
-            .post(`/api/blog`)
-            .send({
-                title: "Somewhere over the rainbow!",
-                authorId: userCreate2.body.id
-            })
-        const blogCreate3 = await request(blogServer)
-            .post(`/api/blog`)
-            .send({
-                title: "Skies are blue",
-                authorId: userCreate.body.id
-            })
-        const blogGetbyAuthor = await request(blogServer)
-            .get('/api/blog/' + (blogCreate.body.authorId + 55) + '/byauthor')
-        expect(blogGetbyAuthor.statusCode).toEqual(404)
-        expect(blogGetbyAuthor.text).toBe('This user does not exist')
+        const userLogout2 = await agent
+            .post('/api/logout')
+        const blogGetbyAuthor = await agent
+            .get('/api/blog/' + userCreate.body.id + '/byauthor')
+        expect(blogGetbyAuthor.statusCode).toEqual(400)
+        expect(blogGetbyAuthor.text).toBe('There is no cookie or token')
     })
     it('should delete a specific blog', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
@@ -301,113 +289,73 @@ describe('Blog testing', () => {
                 password: 'darthsion',
                 role: 'admin'
             })
-        const blogCreate = await request(blogServer)
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'darthsion'
+            })
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "And the dreams that you dare to dream",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogDelete = await request(blogServer)
-            .patch('/api/blog/' + blogId)
+        const blogDelete = await agent
+            .patch('/api/blog/' + blogId + '/delete')
         expect(blogDelete.statusCode).toEqual(204)
     })
     it('should not delete a blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Coorta',
-                password: 'coorta',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "And the dreams that you dare to dream?",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogDelete = await request(blogServer)
-            .patch('/api/blog/' + (blogId + 55))
-        expect(blogDelete.statusCode).toEqual(400)
-        expect(blogDelete.text).toBe('This blog could not be deleted')
+        const blogDelete = await agent
+            .patch('/api/blog/' + (blogId + 55) + '/delete')
+        expect(blogDelete.statusCode).toEqual(404)
+        expect(blogDelete.text).toBe('The blog does not exist')
     })
     it('should recover a deleted blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Traya',
-                password: 'darthtraya',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Really do come true",
-                authorId: userCreate.body.id,
-                deleted: true
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogRecover = await request(blogServer)
+        const blogDelete = await agent
+            .patch('/api/blog/' + blogId + '/delete')
+        const blogRecover = await agent
             .patch('/api/blog/' + blogId + '/recover')
         expect(blogRecover.statusCode).toEqual(200)
-        expect(blogRecover.body.title).toBe("Really do come true")
         expect(blogRecover.body.deleted).toBe(false)
     })
     it('should not recover a deleted blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Master Kaedan',
-                password: 'masterkaedan',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Really do come true?",
-                authorId: userCreate.body.id,
-                deleted: true
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogRecover = await request(blogServer)
+        const blogRecover = await agent
             .patch('/api/blog/' + (blogId + 55) + '/recover')
-        expect(blogRecover.statusCode).toEqual(400)
-        expect(blogRecover.text).toBe('This blog could not be recovered')
+        expect(blogRecover.statusCode).toEqual(404)
+        expect(blogRecover.text).toBe('The blog does not exist')
     })
     it('should update a blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Nihilus',
-                password: 'darthnihilus',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Really do come true",
-                authorId: userCreate.body.id,
-                deleted: true
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogUpdate = await request(blogServer)
+        const blogUpdate = await agent
             .put('/api/blog/' + blogId)
             .send({
                 title: "Really do come true?",
@@ -418,26 +366,14 @@ describe('Blog testing', () => {
         expect(blogUpdate.body.content).toBe('En un rincón de la Mancha de cuyo nombre no quiero acordarme...')
     })
     it('should not update a blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Ravage',
-                password: 'darthravage',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Really do come true?",
-                authorId: userCreate.body.id,
-                deleted: true
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogUpdate = await request(blogServer)
+        const blogUpdate = await agent
             .put('/api/blog/' + (blogId + 55))
             .send({
                 title: "Really do come true?",
@@ -447,179 +383,129 @@ describe('Blog testing', () => {
         expect(blogUpdate.text).toBe('This blog could not be found')
     })
     it('should irreversibly delete a specific blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Vogga the Hutt',
-                password: 'voggathehutt',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Someday I'll wish upon a star",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogDelete = await request(blogServer)
+        const blogDelete = await agent
             .delete('/api/blog/' + blogId + '/final')
-        const blogGet = await request(blogServer)
+        const blogGet = await agent
             .get('/api/blog/' + blogId)
         expect(blogDelete.statusCode).toEqual(204)
         expect(blogGet.statusCode).toEqual(404)
+        expect(blogGet.text).toBe('This blog could not be found')
     })
-    it('should not irreversibly delete a specific blog that does not exist', async () => {
+    it('should not irreversibly delete a specific blog if the logged user is not an admin', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
         const randomString = new RandomString();
         const rand = randomString.generate();
         const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
+        const userCreate = await agent
             .post('/api/users')
             .send({
                 email: emailGen,
-                name: 'Visquis',
-                password: 'visquis',
-                role: 'admin'
+                name: 'Ghilanain',
+                password: 'ghilanain',
+                role: 'simpleUser'
             })
-        const blogCreate = await request(blogServer)
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'ghilanain'
+            })
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "Someday I'll wish upon a star?",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogDelete = await request(blogServer)
-            .delete('/api/blog/' + (blogId + 55) + '/final')
-        expect(blogDelete.statusCode).toEqual(400)
-        expect(blogDelete.text).toBe('This blog could not be completely deleted')
+        const blogDelete = await agent
+            .delete('/api/blog/' + blogId + '/final')
+        expect(blogDelete.statusCode).toEqual(401)
+        expect(blogDelete.text).toBe('The user does not have the necessary access level')
     })
-    it('should display the popularity of a specific blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Acina',
-                password: 'darthacina',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+    it('should update the popularity of a specific blog', async () => {
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "And wake up where the clouds are far behind me",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
+        const userLogout = await agent
+            .post('/api/logout')
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await agent
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'June',
+                password: 'june',
+                role: 'admin'
+            })
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'june'
+            })
+        const blogLike = await agent
             .patch('/api/blog/' + blogId + '/liked')
-        const blogPopularity = await request(blogServer)
-            .get('/api/blog/' + blogId + '/popularity')
-        const users = await request(userServer)
-            .get('/api/users')
-        const usersLength = users.body.length
-        const specificBlog = await request(blogServer)
+        const blogPopularity = await agent
+            .patch('/api/blog/' + blogId + '/popularity')
+        const blogGet = await agent
             .get('/api/blog/' + blogId)
-        const likes = specificBlog!.body.likeCounter
-        const popularity = (likes / (usersLength - 1)) * 100
         expect(blogPopularity.statusCode).toEqual(200)
-        expect(blogPopularity.text).toBe(popularity + '%')
+        expect(blogPopularity.text).toBe('Popularity updated')
+        expect(blogCreate.body.popularity).toBe('0%')
+        expect(blogGet.body.popularity).toBe('12.5%')
     })
-    it('should not display the popularity of a blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Marr',
-                password: 'darthmarr',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
+    it('should not update the popularity of a blog that does not exist', async () => {
+        const blogCreate = await agent
             .post(`/api/blog`)
             .send({
                 title: "And wake up where the clouds are far behind me",
-                authorId: userCreate.body.id
+                content: 'whoknows'
             })
         const blogId = blogCreate.body.id
-        const blogLike = await request(blogServer)
+        const blogLike = await agent
             .patch('/api/blog/' + blogId + '/liked')
-        const blogPopularity = await request(blogServer)
-            .get('/api/blog/' + (blogId + 55) + '/popularity')
-        expect(blogPopularity.statusCode).toEqual(400)
-        expect(blogPopularity.text).toBe("This blog's popularity score could not be displayed")
+        const blogPopularity = await agent
+            .patch('/api/blog/' + (blogId + 55) + '/popularity')
+        expect(blogPopularity.statusCode).toEqual(404)
+        expect(blogPopularity.text).toBe('This blog could not be found')
     })
-    it('should increase the like counter from a blog', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Mortis',
-                password: 'darthmortis',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
-            .post(`/api/blog`)
-            .send({
-                title: "Where troubles melt like lemon drops",
-                authorId: userCreate.body.id
-            })
-        const blogId = blogCreate.body.id
-        const blogCounter = await request(blogServer)
-            .patch('/api/blog/' + blogId + '/counter')
-        expect(blogCounter.statusCode).toEqual(200)
-        expect(blogCounter.body.likeCounter).toBe(1)
-    })
-    it('should not increase the like counter from a blog that does not exist', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await request(blogServer)
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Darth Thanaton',
-                password: 'darththanaton',
-                role: 'admin'
-            })
-        const blogCreate = await request(blogServer)
-            .post(`/api/blog`)
-            .send({
-                title: "Where troubles melt like lemon drops?",
-                authorId: userCreate.body.id
-            })
-        const blogId = blogCreate.body.id
-        const blogCounter = await request(blogServer)
-            .patch('/api/blog/' + (blogId + 55) + '/counter')
-        expect(blogCounter.statusCode).toEqual(400)
-        expect(blogCounter.text).toBe("This blog's like counter could not be increased")
+    it('should logout a user', async () => {
+        const userLogout = await agent
+            .post('/api/logout')
+        expect(userLogout.statusCode).toEqual(200)
+        expect(userLogout.text).toBe('Logout successful')
     })
 })
 
 
 
-describe('DB delete', () => {
+describe('Final DB delete', () => {
     afterAll(() => {
         blogServer.close()
-        userServer.close()
     })
-    it('should delete all blog entries', async () => {
-        const blogDelete = await request(blogServer)
+    it('should delete all entries in all tables', async () => {
+        const likesDelete = await agent
+            .delete('/api/likes')
+        const blogDelete = await agent
             .delete('/api/blog')
-        expect(blogDelete.statusCode).toEqual(204)
-    })
-    it('should delete all users', async () => {
-        const usersDelete = await request(blogServer)
+        const usersDelete = await agent
             .delete('/api/users')
+        expect(likesDelete.statusCode).toEqual(204)
+        expect(blogDelete.statusCode).toEqual(204)
         expect(usersDelete.statusCode).toEqual(204)
     })
 })
