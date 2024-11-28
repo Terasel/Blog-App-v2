@@ -11,7 +11,7 @@
 6. En la terminal del backend, ejecutar el comando ```npm run build``` para su despliegue.
 
 ## Instrucciones de uso
-1. Para levantar el servidor del backend, abrir una terminal en la carpeta raíz del repositorio y ejecutar el comando ```npm run start```. En caso de querer probar cada endpoint individualmente sin pasar por el frontend, el archivo 'api.http' contiene un listado de todos los endpoints (requiere la extensión 'REST Client' en Visual Studio Code)
+1. Para levantar el servidor del backend, abrir una terminal en la carpeta raíz del repositorio y ejecutar el comando ```npm run start```. En caso de querer probar cada endpoint individualmente sin pasar por el frontend, el archivo 'api.http' contiene un listado de todos los endpoints (requiere la extensión 'REST Client' en Visual Studio Code). En este caso, se deberá levantar el servidor con el comando ```npm run dev```
 2. Para levantar el servidor del frontend, abrir una terminal en la carpeta '\src\frontend' y ejecutar el comando ````npm run preview```. Por la terminal debería aparecer un enlace (por defecto http://localhost:4173/). Hacer ctrl+click en el enlace para abrirlo en una pestaña del navegador por defecto.
 3. Para acceder a la documentación de la API, asegurarse de que el servidor backend está levantado y abrir una pestaña en el navegador con el url 'localhost:3000/docs'.
 4. Para ejecutar las suites de testing, abrir la terminal del backend y ejecutar el comando ```npm run test``` (Nota: En ejecutarse los tests se eliminan todos los usuarios y blogs de la base de datos. Tener cuidado).
