@@ -353,6 +353,8 @@ router.put('/blog/:id', blogServices.updateBlog)
  *        description: Popularity updated
  *      400:
  *        description: No ID is being sent/This blog's popularity could not be updated
+ *      404:
+ *       description: This blog could not be found
  */
 
 router.patch('/blog/:id/popularity', blogServices.popularityScore)

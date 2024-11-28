@@ -277,11 +277,14 @@ export const popularityScore: Handler = async (req, res) => {
     try {
         const reqFind: blogFind = { id: req.params.id }
         if (reqFind.id == null) throw 'No ID'
+        const blog = await blogModel.getBlog(reqFind)
+        if (!blog) throw 'No blog'
         const popularity = await blogModel.popularityScore(reqFind)
         if (!popularity) throw 'No popularity score'
         res.status(200).send('Popularity updated')
     } catch (err) {
         if (err == 'No ID') res.status(400).send('No ID is being sent')
+        if (err == 'No blog') res.status(404).send('This blog could not be found')
         if (err == 'No popularity score') res.status(400).send("This blog's popularity score could not be updated")
     }
 }

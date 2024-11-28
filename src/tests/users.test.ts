@@ -6,19 +6,15 @@ import supertest from 'supertest'
 const agent = supertest.agent(userServer)
 
 describe('Starting DB delete', () => {
-    it('should delete all likes', async () => {
+    it('should delete all entries in all tables', async () => {
         const likesDelete = await agent
             .delete('/api/likes')
-        expect(likesDelete.statusCode).toEqual(204)
-    })
-    it('should delete all blog entries', async () => {
         const blogDelete = await agent
             .delete('/api/blog')
-        expect(blogDelete.statusCode).toEqual(204)
-    })
-    it('should delete all users', async () => {
         const usersDelete = await agent
             .delete('/api/users')
+        expect(likesDelete.statusCode).toEqual(204)
+        expect(blogDelete.statusCode).toEqual(204)
         expect(usersDelete.statusCode).toEqual(204)
     })
 })
@@ -229,19 +225,15 @@ describe('Final DB delete', () => {
     afterAll(() => {
         userServer.close()
     })
-    it('should delete all likes', async () => {
+    it('should delete all entries in all tables', async () => {
         const likesDelete = await agent
             .delete('/api/likes')
-        expect(likesDelete.statusCode).toEqual(204)
-    })
-    it('should delete all blog entries', async () => {
         const blogDelete = await agent
             .delete('/api/blog')
-        expect(blogDelete.statusCode).toEqual(204)
-    })
-    it('should delete all users', async () => {
         const usersDelete = await agent
             .delete('/api/users')
+        expect(likesDelete.statusCode).toEqual(204)
+        expect(blogDelete.statusCode).toEqual(204)
         expect(usersDelete.statusCode).toEqual(204)
     })
 })
