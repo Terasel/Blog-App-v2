@@ -66,12 +66,13 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:3000/api/users/2969 HTTP/1.1
+PUT http://localhost:3000/api/users/3773 HTTP/1.1
 content-type: application/json
 
 {
   "email":"anyway34@gmail.com",
-  "name": "Fat Man"
+  "name": "Fat Man",
+  "bio": "ajhgjhsdgjgsd"
 }
 
 ###
