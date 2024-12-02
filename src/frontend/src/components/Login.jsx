@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 
 const Login = () => {
+    const [id, setId] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -17,11 +18,12 @@ const Login = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         })
-        console.log(response)
+        const savedJson = await response.json()
+        console.log(savedJson)
         if (!response.ok) {
             console.log('Login error')
         } else {
-            window.location.assign("/bloglist")
+            window.location.assign(`/bloglist/${savedJson.id}`)
         }
         setEmail('')
         setPassword('')

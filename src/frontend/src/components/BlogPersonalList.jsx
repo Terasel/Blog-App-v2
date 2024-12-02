@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react"
 import BlogPersonal from "./BlogPersonal"
 import { useParams } from 'react-router-dom'
-// import Cookies from 'js-cookie'
 
 function BlogPersonalList() {
+    const { id } = useParams()
     const [blogs, setBlogs] = useState([])
-    // const cookieGet = Cookies.get('access_token')
-    const { authorId } = useParams()
 
     useEffect(() => {
         async function fetchData() {
-
             const options = { method: 'GET', credentials: 'include' }
-            const response = await fetch(`http://localhost:3000/api/blog/${authorId}/byauthor`, options)
+            const response = await fetch(`http://localhost:3000/api/blog/${id}/byauthor`, options)
             const data = await response.json()
             setBlogs(data)
         }
@@ -20,7 +17,7 @@ function BlogPersonalList() {
     }, [])
 
     const blogList = async () => {
-        window.location.assign("/bloglist")
+        window.location.assign(`/bloglist/${id}`)
     }
     if (blogs == []) {
         return <div>

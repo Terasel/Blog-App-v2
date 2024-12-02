@@ -126,7 +126,6 @@ describe('User testing', () => {
                 password: 'morrigan'
             })
         expect(userLogin.statusCode).toEqual(200)
-        expect(userLogin.text).toBe('User successfully logged in')
     })
     it('should get all users', async () => {
         const usersGet = await agent

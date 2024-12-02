@@ -48,7 +48,7 @@ GET http://localhost:3000/api/blog/1563
 
 ###
 
-GET http://localhost:3000/api/blog/2968/byauthor
+GET http://localhost:3000/api/blog/3810/byauthor
 
 ###
 
@@ -66,13 +66,12 @@ content-type: application/json
 
 ###
 
-PUT http://localhost:3000/api/users/3773 HTTP/1.1
+PUT http://localhost:3000/api/users/3775 HTTP/1.1
 content-type: application/json
 
 {
-  "email":"anyway34@gmail.com",
-  "name": "Fat Man",
-  "bio": "ajhgjhsdgjgsd"
+  "email":"livininthesunshine40@hotmail.com",
+  "name":"Bobbie"
 }
 
 ###

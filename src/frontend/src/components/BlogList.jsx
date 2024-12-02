@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import Blog from "./Blog"
+import { useParams } from 'react-router-dom'
 
 function BlogList() {
+    const { id } = useParams()
     const [blogs, setBlogs] = useState([])
 
     useEffect(() => {
@@ -30,11 +32,11 @@ function BlogList() {
     }
 
     const userPage = async () => {
-        window.location.assign("/userpage/:id")
+        window.location.assign(`/userpage/${id}`)
     }
 
     const myBlogs = async () => {
-        window.location.assign("/myblogs/:id")
+        window.location.assign(`/myblogs/${id}`)
     }
 
     return (

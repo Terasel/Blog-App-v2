@@ -1,10 +1,11 @@
 import UserEdit from "./UserEdit"
 import BlogNew from "./BlogNew"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useParams } from "react-router-dom"
 
 function UserPage() {
+    const { id } = useParams()
     const blogList = async () => {
-        window.location.assign("/bloglist")
+        window.location.assign(`/bloglist/${id}`)
     }
     return (
         <div>

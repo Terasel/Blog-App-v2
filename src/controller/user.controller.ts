@@ -66,8 +66,8 @@ export const updateUser: Handler = async (req, res) => {
         if (!user) throw 'No user'
         const userU: userUpdate = { name: req.body.name, email: req.body.email }
         const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        if (!userU.email.match(validRegex)) throw 'Invalid email'
-        if (typeof userU.name != 'string') throw 'Invalid name'
+        if ((userU.email != null) && (!userU.email.match(validRegex))) throw 'Invalid email'
+        if ((typeof userU.name != 'string') && (userU.name != null)) throw 'Invalid name'
         const userUpdate = await userModel.updateUser(userC, userU)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
@@ -163,7 +163,7 @@ export const loginUser: Handler = async (req, res) => {
         res
             .cookie('access_token', token, { httpOnly: true, secure: false })
             .status(200)
-            .send('User successfully logged in')
+            .json({ id: userLogin?.id })
     } catch (err) {
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
         if (err == 'Invalid password') res.status(400).send('This password is invalid')

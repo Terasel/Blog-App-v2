@@ -16,7 +16,7 @@ function BlogNew() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(blog)
         })
-        console.log(response)
+        console.log(response.json())
         await setTitle('')
         await setContent('')
     }

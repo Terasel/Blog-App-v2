@@ -39,7 +39,6 @@ describe('Blog testing', () => {
                 password: 'morrigan'
             })
         expect(userLogin.statusCode).toEqual(200)
-        expect(userLogin.text).toBe('User successfully logged in')
     })
     it('should create a new blog', async () => {
         const blogCreate = await agent

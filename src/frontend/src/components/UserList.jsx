@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react"
 import User from "./User"
+import { useParams } from 'react-router-dom'
 
 function UserList() {
+    const { id } = useParams()
     const [users, setUsers] = useState([])
 
     useEffect(() => {
@@ -15,7 +17,7 @@ function UserList() {
     }, [])
 
     const blogList = async () => {
-        window.location.assign("/bloglist")
+        window.location.assign(`/bloglist/${id}`)
     }
 
     return (

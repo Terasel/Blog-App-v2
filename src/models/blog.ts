@@ -137,6 +137,21 @@ export class blogModel {
             },
             orderBy: {
                 createdAt: 'desc'
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                createdAt: true,
+                updatedAt: true,
+                popularity: true,
+                deleted: true,
+                authorId: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
         return authorBlogs
