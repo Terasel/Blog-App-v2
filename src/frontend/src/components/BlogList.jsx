@@ -8,7 +8,7 @@ function BlogList() {
 
     useEffect(() => {
         async function fetchData() {
-            const options = { method: 'GET' }
+            const options = { method: 'GET', credentials: "include" }
             const blogsResponse = await fetch('http://localhost:3000/api/blog', options)
             const blogsData = await blogsResponse.json()
             setBlogs(blogsData)

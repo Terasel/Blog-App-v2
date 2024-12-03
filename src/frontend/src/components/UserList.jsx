@@ -8,7 +8,7 @@ function UserList() {
 
     useEffect(() => {
         async function fetchData() {
-            const options = { method: 'GET' }
+            const options = { method: 'GET', credentials: "include" }
             const usersResponse = await fetch('http://localhost:3000/api/users', options)
             const usersData = await usersResponse.json()
             setUsers(usersData)

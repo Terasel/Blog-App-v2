@@ -48,7 +48,7 @@ GET http://localhost:3000/api/blog/1563
 
 ###
 
-GET http://localhost:3000/api/blog/3810/byauthor
+GET http://localhost:3000/api/myblogs
 
 ###
 

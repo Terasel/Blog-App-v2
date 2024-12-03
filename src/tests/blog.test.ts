@@ -238,7 +238,7 @@ describe('Blog testing', () => {
                 content: 'whoknows'
             })
         const blogGetbyAuthor = await agent
-            .get('/api/blog/' + userCreate.body.id + '/byauthor')
+            .get('/api/myblogs')
         expect(blogGetbyAuthor.statusCode).toEqual(200)
         expect(blogGetbyAuthor.body[0].title).toBe("Skies are blue")
         expect(blogGetbyAuthor.body[1].title).toBe("Somewhere over the rainbow?")
@@ -272,7 +272,7 @@ describe('Blog testing', () => {
         const userLogout2 = await agent
             .post('/api/logout')
         const blogGetbyAuthor = await agent
-            .get('/api/blog/' + userCreate.body.id + '/byauthor')
+            .get('/api/myblogs')
         expect(blogGetbyAuthor.statusCode).toEqual(400)
         expect(blogGetbyAuthor.text).toBe('There is no cookie or token')
     })

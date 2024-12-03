@@ -9,7 +9,7 @@ function BlogPersonalList() {
     useEffect(() => {
         async function fetchData() {
             const options = { method: 'GET', credentials: 'include' }
-            const response = await fetch(`http://localhost:3000/api/blog/${id}/byauthor`, options)
+            const response = await fetch(`http://localhost:3000/api/myblogs`, options)
             const data = await response.json()
             setBlogs(data)
         }
@@ -30,7 +30,7 @@ function BlogPersonalList() {
                 {
                     blogs.map(blogpersonal => {
                         return (
-                            <BlogPersonal key={blogpersonal.id} blog={blogpersonal} />
+                            <BlogPersonal key={blogpersonal.id} blogpersonal={blogpersonal} />
                         )
                     })
                 }

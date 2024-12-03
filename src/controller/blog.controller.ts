@@ -139,10 +139,13 @@ export const dislikeBlog: Handler = async (req, res) => {
 
 export const getBlogs: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const blogs = await blogModel.getBlogs()
         if (!blogs) throw 'Empty'
         res.status(200).send(blogs)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'Empty') res.status(404).send('No blogs could be found')
     }
 }

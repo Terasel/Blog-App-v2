@@ -215,6 +215,8 @@ router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
  *        type: array
  *        items:
  *         $ref: '#/components/schemas/Blog'
+ *    400:
+ *     description: There is no cookie or token
  *    404:
  *     description: No blogs could be found
  */
@@ -245,12 +247,10 @@ router.get('/blog/:id', blogServices.getBlog)
 
 /**
  * @swagger
- * /api/blog/{authorId}/byauthor:
+ * /api/myblogs:
  *  get:
  *   summary: Get all blogs from a specific author (thas is logged in)
  *   tags: [Blogs simpleUser]
- *   parameters:
- *    - $ref: '#/components/parameters/authorId'
  *   responses:
  *    200:
  *     content:
@@ -265,7 +265,7 @@ router.get('/blog/:id', blogServices.getBlog)
  *     description: This user does not exist/No blogs from this author could be found
  */
 
-router.get('/blog/:authorId/byauthor', blogServices.getBlogsByAuthor)
+router.get('/myblogs', blogServices.getBlogsByAuthor)
 
 /**
  * @swagger
