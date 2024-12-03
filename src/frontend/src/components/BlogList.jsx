@@ -28,7 +28,7 @@ function BlogList() {
     }
 
     const userList = async () => {
-        window.location.assign("/userlist")
+        window.location.assign(`/userlist/${id}`)
     }
 
     const userPage = async () => {

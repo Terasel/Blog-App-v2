@@ -68,8 +68,8 @@ export const updateUser: Handler = async (req, res) => {
         if (!user) throw 'No user'
         const userU: userUpdate = { name: req.body.name, email: req.body.email }
         const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        if ((userU.email != null) && (!userU.email.match(validRegex))) throw 'Invalid email'
-        if ((typeof userU.name != 'string') && (userU.name != null)) throw 'Invalid name'
+        if ((userU.email != '') && (!userU.email.match(validRegex))) throw 'Invalid email'
+        if ((typeof userU.name != 'string') && (userU.name != '')) throw 'Invalid name'
         const userUpdate = await userModel.updateUser(userC, userU)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)

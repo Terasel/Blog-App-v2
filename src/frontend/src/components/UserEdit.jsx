@@ -16,6 +16,7 @@ function UserEdit() {
         console.log(user)
         const update = await fetch(`http://localhost:3000/api/users/${id}`, {
             method: 'PUT',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         })

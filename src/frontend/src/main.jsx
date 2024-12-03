@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />
   },
   {
-    path: "/userlist",
+    path: "/userlist/:id",
     element: <div>
       <UserList />
     </div>,
