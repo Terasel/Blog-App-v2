@@ -238,7 +238,7 @@ router.get('/blog', blogServices.getBlogs)
  *       schema:
  *        $ref: '#/components/schemas/Blog'
  *    400:
- *     description: No ID is being sent
+ *     description: There is no cookie or token/No ID is being sent
  *    404:
  *     description: This blog could not be found
  */
@@ -333,7 +333,7 @@ router.patch('/blog/:id/recover', blogServices.recoverBlog)
  *       schema:
  *        $ref: '#/components/schemas/BlogCreate2'
  *    400:
- *     description: No ID is being sent/This title is invalid/This content is invalid/This blog could not be updated
+ *     description: There is no cookie or token/No ID is being sent/This title is invalid/This content is invalid/This blog could not be updated
  *    404:
  *     description: This blog could not be found
  */
@@ -352,7 +352,7 @@ router.put('/blog/:id', blogServices.updateBlog)
  *      200:
  *        description: Popularity updated
  *      400:
- *        description: No ID is being sent/This blog's popularity could not be updated
+ *        description: There is no cookie or token/No ID is being sent/This blog's popularity could not be updated
  *      404:
  *       description: This blog could not be found
  */

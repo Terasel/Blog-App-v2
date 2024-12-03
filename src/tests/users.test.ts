@@ -39,6 +39,26 @@ describe('User testing', () => {
         expect(validPassword).toBe(true)
         expect(userCreate.body.role).toBe('admin')
     })
+    it('should login a user', async () => {
+        const randomString = new RandomString();
+        const rand = randomString.generate();
+        const emailGen = 'whoknows' + rand + '@hotmail.com'
+        const userCreate = await agent
+            .post('/api/users')
+            .send({
+                email: emailGen,
+                name: 'Morrigan',
+                password: 'morrigan',
+                role: 'admin'
+            })
+        const userLogin = await agent
+            .post('/api/login')
+            .send({
+                email: emailGen,
+                password: 'morrigan'
+            })
+        expect(userLogin.statusCode).toEqual(200)
+    })
     it('should not create a new user with incorrectly formatted information', async () => {
         const randomString = new RandomString();
         const rand = randomString.generate();
@@ -107,34 +127,14 @@ describe('User testing', () => {
         expect(userUpdate.statusCode).toEqual(404)
         expect(userUpdate.text).toBe('This user could not be found')
     })
-    it('should login a user', async () => {
-        const randomString = new RandomString();
-        const rand = randomString.generate();
-        const emailGen = 'whoknows' + rand + '@hotmail.com'
-        const userCreate = await agent
-            .post('/api/users')
-            .send({
-                email: emailGen,
-                name: 'Morrigan',
-                password: 'morrigan',
-                role: 'admin'
-            })
-        const userLogin = await agent
-            .post('/api/login')
-            .send({
-                email: emailGen,
-                password: 'morrigan'
-            })
-        expect(userLogin.statusCode).toEqual(200)
-    })
     it('should get all users', async () => {
         const usersGet = await agent
             .get('/api/users')
         expect(usersGet.statusCode).toEqual(200)
         expect(usersGet.body[0].name).toBe('Mysterious Stranger')
-        expect(usersGet.body[1].name).toBe('Deadeye Duncan')
-        expect(usersGet.body[2].name).toBe('Juhani')
-        expect(usersGet.body[3].name).toBe('Morrigan')
+        expect(usersGet.body[1].name).toBe('Morrigan')
+        expect(usersGet.body[2].name).toBe('Deadeye Duncan')
+        expect(usersGet.body[3].name).toBe('Juhani')
     })
     it('should ban a user', async () => {
         const randomString = new RandomString();

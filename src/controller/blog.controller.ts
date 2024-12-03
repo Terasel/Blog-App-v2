@@ -152,12 +152,15 @@ export const getBlogs: Handler = async (req, res) => {
 
 export const getBlog: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const reqFind: blogFind = { id: req.params.id }
         if (reqFind.id == null) throw 'No ID'
         const specificBlog = await blogModel.getBlog(reqFind)
         if (!specificBlog) throw 'Empty'
         res.status(200).send(specificBlog)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'Empty') res.status(404).send('This blog could not be found')
     }
@@ -235,6 +238,8 @@ export const recoverBlog: Handler = async (req, res) => {
 
 export const updateBlog: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const reqFind: blogFind = { id: req.params.id }
         if (reqFind.id == null) throw 'No ID'
         const blog = await blogModel.getBlog(reqFind)
@@ -246,6 +251,7 @@ export const updateBlog: Handler = async (req, res) => {
         if (!blogUpdate) throw 'Empty'
         res.status(200).send(blogUpdate)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No blog') res.status(404).send('This blog could not be found')
         if (err == 'Invalid title') res.status(400).send('This title is invalid')
@@ -278,6 +284,8 @@ export const actuallyDeleteBlog: Handler = async (req, res) => {
 
 export const popularityScore: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const reqFind: blogFind = { id: req.params.id }
         if (reqFind.id == null) throw 'No ID'
         const blog = await blogModel.getBlog(reqFind)
@@ -286,6 +294,7 @@ export const popularityScore: Handler = async (req, res) => {
         if (!popularity) throw 'No popularity score'
         res.status(200).send('Popularity updated')
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No blog') res.status(404).send('This blog could not be found')
         if (err == 'No popularity score') res.status(400).send("This blog's popularity score could not be updated")

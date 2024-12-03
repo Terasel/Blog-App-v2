@@ -203,7 +203,7 @@ router.post('/users', userServices.createUser)
  *       schema:
  *        $ref: '#/components/schemas/User'
  *    400:
- *     description: No ID is being sent || This email/user name is invalid || This user could not be updated  
+ *     description: There is no cookie or token/No ID is being sent/This email/user name is invalid/This user could not be updated  
  *    404:
  *     description: This user could not be found
  */

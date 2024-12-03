@@ -60,6 +60,8 @@ export const createUser: Handler = async (req, res) => {
 
 export const updateUser: Handler = async (req, res) => {
     try {
+        const token = req.cookies.access_token
+        if (!token) throw 'No cookie/token'
         const userC: userFind = { id: req.params.id }
         if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
@@ -72,6 +74,7 @@ export const updateUser: Handler = async (req, res) => {
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
+        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
