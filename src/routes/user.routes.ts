@@ -301,6 +301,8 @@ router.patch('/users/:id/unban', userServices.unbanUser)
  *     description: User succesfully logged in
  *    400:
  *     description: This email is invalid/This password is invalid/The password is incorrect/The token has not been created
+ *    401:
+ *     description: This user is currently banned
  */
 
 router.post('/login', userServices.loginUser)

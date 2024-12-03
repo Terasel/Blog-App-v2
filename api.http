@@ -100,7 +100,7 @@ PATCH http://localhost:3000/api/users/3066/ban
 
 ###
 
-PATCH http://localhost:3000/api/users/3066/unban
+PATCH http://localhost:3000/api/users/3832/unban
 
 ###
 

@@ -151,6 +151,7 @@ export const loginUser: Handler = async (req, res) => {
         if (!userC.email.match(validRegex)) throw 'Invalid email'
         if (typeof userC.password != 'string') throw 'Invalid password'
         const userLogin = await userModel.loginUser(userC)
+        if (userLogin?.banned == true) throw 'Banned user'
         const isValid = await bcrypt.compare(req.body.password, userLogin!.password)
         if (!isValid) throw 'Invalid'
         const token = jwt.sign(
@@ -167,6 +168,7 @@ export const loginUser: Handler = async (req, res) => {
     } catch (err) {
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
         if (err == 'Invalid password') res.status(400).send('This password is invalid')
+        if (err == 'Banned user') res.status(401).send('This user is currently banned')
         if (err == 'Invalid') res.status(400).send('The password is incorrect')
         if (err == 'No token') res.status(400).send('The token has not been created')
     }

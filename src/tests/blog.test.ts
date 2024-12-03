@@ -170,7 +170,7 @@ describe('Blog testing', () => {
         expect(blogLike.text).toBe('The like does not exist')
     })
     it('should get all blogs, with the most recent at the top of the list', async () => {
-        const blogsGet = await request(blogServer)
+        const blogsGet = await agent
             .get('/api/blog')
         expect(blogsGet.statusCode).toEqual(200)
         expect(blogsGet.body[0].title).toBe("There's a land that I heard of?")
