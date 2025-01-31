@@ -3,7 +3,7 @@
 ## Instalación
 
 1. Clonar el repositorio
-   ```https://github.com/Terasel/Entrega-5.1-ver2.git```
+   ```https://github.com/Terasel/Blog-App-v2.git```
 2. Crear el archivo '.env' en la carpeta raíz del repositorio. El archivo 'env_example.txt' contiene un ejemplo sobre la estructura que debería tener el archivo creado. En caso de dudas sobre la variable 'DATABASE_URL', visitar la página web https://www.prisma.io/docs/orm/overview/databases/mysql
 3. Instalar las dependencias necesarias. Para el backend, abrir una terminal en la carpeta raíz del repositorio y ejecutar el comando ```npm install```. Para el frontend, abrir una terminal en la carpeta '\src\frontend' y ejecutar el comando ````npm install```
 4. En la terminal del backend, ejecutar el comando ```npx prisma migrate dev``` para ejecutar todas las migraciones de Prisma y que la base de datos tenga el formato adecuado.
