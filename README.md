@@ -1,3 +1,25 @@
+# Blog App
+
+## Installation
+
+1. Clone the repository
+   ```https://github.com/Terasel/Blog-App-v2.git```
+2. Create the file '.env' in the repository root folder. The file 'env_example.txt' contains an example about the structure the created file should have. When in doubt about the 'DATABASE_URL' variable, visit the webpage https://www.prisma.io/docs/orm/overview/databases/mysql
+3. Install the required dependencies. For the backend, open a terminal in the repository root folder and run the command ```npm install```. For the frontend, open a terminal in the folder '\src\frontend' and run the command ```npm install```
+4. In the backend terminal, run the command ```npx prisma migrate dev``` in order to execute all Prisma migrations and for the database to have the proper format.
+5. In the backend terminal, run the command ```npm run build``` in order to compile the code to Javascript.
+6. In the frontend terminal, run the command ```npm run build``` for its deployment.
+
+## Usage instructions
+1. To start the backend server, open a terminal in the repository root folder and run the command ```npm run start```. In the case that you want to test every endpoint individually without using the frontend, the file 'api.http' contains a list of every endpoint (requires the 'REST Client' extension in Visual Studio Code). In which case, the server must be started with the command ```npm run dev```
+2. To start the frontend server, open a terminal in the folder '\src\frontend' and run the command ````npm run preview```. In the terminal a link should appear (http://localhost:4173/ by default). Ctrl+click the link to open it in a tab of your default internet browser.
+3. To access the API documentation, make sure that the backend server is up and open a tab in the browser with the url 'localhost:3000/docs'.
+4. To run the testing suites, open the backend terminal and run the command ```npm run test``` (Note: When running the tests all users and bolgs in the database will be deleted. Be careful).
+
+
+
+
+
 # App de Blog
 
 ## Instalación
