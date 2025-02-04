@@ -1,5 +1,7 @@
 import { Router } from "express"
 import * as blogServices from '../controller/blog.controller'
+import { TokenMiddleware } from "../middleware/user.middleware"
+import { RoleMiddleware } from "../middleware/user.middleware"
 
 const router = Router();
 
@@ -155,7 +157,7 @@ const router = Router();
  *     description: This blog could not be created
  */
 
-router.post('/blog', blogServices.createBlog)
+router.post('/blog', TokenMiddleware, blogServices.createBlog)
 
 /**
  * @swagger
@@ -178,7 +180,7 @@ router.post('/blog', blogServices.createBlog)
  *     description: The like could not be created
  */
 
-router.patch('/blog/:id/liked', blogServices.likeBlog)
+router.patch('/blog/:id/liked', TokenMiddleware, blogServices.likeBlog)
 
 /**
  * @swagger
@@ -199,7 +201,7 @@ router.patch('/blog/:id/liked', blogServices.likeBlog)
  *     description: The user does not exist/The blog does not exist
  */
 
-router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
+router.patch('/blog/:id/disliked', TokenMiddleware, blogServices.dislikeBlog)
 
 /**
  * @swagger
@@ -221,7 +223,7 @@ router.patch('/blog/:id/disliked', blogServices.dislikeBlog)
  *     description: No blogs could be found
  */
 
-router.get('/blog', blogServices.getBlogs)
+router.get('/blog', TokenMiddleware, blogServices.getBlogs)
 
 /**
  * @swagger
@@ -243,7 +245,7 @@ router.get('/blog', blogServices.getBlogs)
  *     description: This blog could not be found
  */
 
-router.get('/blog/:id', blogServices.getBlog)
+router.get('/blog/:id', TokenMiddleware, blogServices.getBlog)
 
 /**
  * @swagger
@@ -265,7 +267,7 @@ router.get('/blog/:id', blogServices.getBlog)
  *     description: This user does not exist/No blogs from this author could be found
  */
 
-router.get('/myblogs', blogServices.getBlogsByAuthor)
+router.get('/myblogs', TokenMiddleware, blogServices.getBlogsByAuthor)
 
 /**
  * @swagger
@@ -286,7 +288,7 @@ router.get('/myblogs', blogServices.getBlogsByAuthor)
  *     description: The blog does not exist
  */
 
-router.patch('/blog/:id/delete', blogServices.deleteBlog)
+router.patch('/blog/:id/delete', TokenMiddleware, blogServices.deleteBlog)
 
 /**
  * @swagger
@@ -310,7 +312,7 @@ router.patch('/blog/:id/delete', blogServices.deleteBlog)
  *     description: The blog does not exist
  */
 
-router.patch('/blog/:id/recover', blogServices.recoverBlog)
+router.patch('/blog/:id/recover', TokenMiddleware, blogServices.recoverBlog)
 
 /**
  * @swagger
@@ -338,7 +340,7 @@ router.patch('/blog/:id/recover', blogServices.recoverBlog)
  *     description: This blog could not be found
  */
 
-router.put('/blog/:id', blogServices.updateBlog)
+router.put('/blog/:id', TokenMiddleware, blogServices.updateBlog)
 
 /**
  * @swagger
@@ -357,7 +359,7 @@ router.put('/blog/:id', blogServices.updateBlog)
  *       description: This blog could not be found
  */
 
-router.patch('/blog/:id/popularity', blogServices.popularityScore)
+router.patch('/blog/:id/popularity', TokenMiddleware, blogServices.popularityScore)
 
 // admin
 
@@ -379,7 +381,7 @@ router.patch('/blog/:id/popularity', blogServices.popularityScore)
  *     description: The user does not have the necessary access level
  */
 
-router.delete('/blog/:id/final', blogServices.actuallyDeleteBlog)
+router.delete('/blog/:id/final', TokenMiddleware, RoleMiddleware, blogServices.actuallyDeleteBlog)
 
 // dev
 

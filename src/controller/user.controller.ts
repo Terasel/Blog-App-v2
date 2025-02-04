@@ -6,13 +6,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-interface JwtPayload {
-    id: number,
-    name: string,
-    email: string,
-    role: string
-}
-
 interface userCreated {
     email: string,
     name: string,
@@ -60,8 +53,6 @@ export const createUser: Handler = async (req, res) => {
 
 export const updateUser: Handler = async (req, res) => {
     try {
-        const token = req.cookies.access_token
-        if (!token) throw 'No cookie/token'
         const userC: userFind = { id: req.params.id }
         if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
@@ -74,7 +65,6 @@ export const updateUser: Handler = async (req, res) => {
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
-        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Invalid email') res.status(400).send('This email is invalid')
@@ -85,37 +75,25 @@ export const updateUser: Handler = async (req, res) => {
 
 export const getUsers: Handler = async (req, res) => {
     try {
-        const token = req.cookies.access_token
-        if (!token) throw 'No cookie/token'
-        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
-        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const users = await userModel.getUsers()
         if (!users) throw 'No users'
         res.status(200).send(users)
     } catch (err) {
-        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
-        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'No users') res.status(404).send('No users could be found')
     }
 }
 
 export const banUser: Handler = async (req, res) => {
     try {
-        const token = req.cookies.access_token
-        if (!token) throw 'No cookie/token'
-        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
-        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
         if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
-        if (user.banned == true) throw ('Already banned')
+        if (user.banned == true) throw 'Already banned'
         const userBan = await userModel.banUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
-        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Already banned') res.status(400).send('This user is already banned')
@@ -125,21 +103,15 @@ export const banUser: Handler = async (req, res) => {
 
 export const unbanUser: Handler = async (req, res) => {
     try {
-        const token = req.cookies.access_token
-        if (!token) throw 'No cookie/token'
-        const decoded = jwt.verify(token, process.env.SECRET_JWT_KEY!) as JwtPayload
-        if (decoded.role == 'simpleUser') throw 'Unauthorized'
         const userC: userFind = { id: req.params.id }
         if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
-        if (user.banned == false) throw ('Already unbanned')
+        if (user.banned == false) throw 'Already unbanned'
         const userBan = await userModel.unbanUser(userC)
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err == 'No cookie/token') res.status(400).send('There is no cookie or token')
-        if (err == 'Unauthorized') res.status(401).send('The user does not have the necessary access level')
         if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Already unbanned') res.status(400).send('This user is not banned')

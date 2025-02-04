@@ -30,8 +30,8 @@ POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
-"title": "Hallellujah",
-"content": "akngkjsebgesg"
+"title": "Hallellujah23",
+"content": "akngkjsebgesg23"
 }
 
 ###
@@ -44,7 +44,7 @@ GET http://localhost:3000/api/blog
 
 ###
 
-GET http://localhost:3000/api/blog/1563
+GET http://localhost:3000/api/blog/232
 
 ###
 
@@ -108,7 +108,7 @@ PATCH http://localhost:3000/api/blog/1558/counter
 
 ###
 
-DELETE http://localhost:3000/api/blog/1561/final
+DELETE http://localhost:3000/api/blog/232/final
 
 ###
 DELETE http://localhost:3000/api/blog
