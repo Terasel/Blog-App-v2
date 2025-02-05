@@ -1,7 +1,6 @@
 import { Router } from "express"
 import * as userServices from '../controller/user.controller'
-import { TokenMiddleware } from "../middleware/user.middleware"
-import { RoleMiddleware } from "../middleware/user.middleware"
+import { TokenMiddleware, RoleMiddleware, UserIdMiddleware, CreateUserMiddleware, UpdateUserMiddleware, LoginUserMiddleware } from "../middleware/user.middleware"
 
 const router = Router();
 
@@ -182,7 +181,7 @@ const router = Router();
  *     description: This user could not be created
  */
 
-router.post('/users', userServices.createUser)
+router.post('/users', CreateUserMiddleware, userServices.createUser)
 
 /**
  * @swagger
@@ -210,7 +209,7 @@ router.post('/users', userServices.createUser)
  *     description: This user could not be found
  */
 
-router.put('/users/:id', TokenMiddleware, userServices.updateUser)
+router.put('/users/:id', TokenMiddleware, UserIdMiddleware, UpdateUserMiddleware, userServices.updateUser)
 
 //admin
 
@@ -260,7 +259,7 @@ router.get('/users', TokenMiddleware, RoleMiddleware, userServices.getUsers)
  *     description: This user could not be found
  */
 
-router.patch('/users/:id/ban', TokenMiddleware, RoleMiddleware, userServices.banUser)
+router.patch('/users/:id/ban', TokenMiddleware, RoleMiddleware, UserIdMiddleware, userServices.banUser)
 
 /**
  * @swagger
@@ -284,7 +283,7 @@ router.patch('/users/:id/ban', TokenMiddleware, RoleMiddleware, userServices.ban
  *     description: This user could not be found
  */
 
-router.patch('/users/:id/unban', TokenMiddleware, RoleMiddleware, userServices.unbanUser)
+router.patch('/users/:id/unban', TokenMiddleware, RoleMiddleware, UserIdMiddleware, userServices.unbanUser)
 
 //login
 
@@ -309,7 +308,7 @@ router.patch('/users/:id/unban', TokenMiddleware, RoleMiddleware, userServices.u
  *     description: This user is currently banned
  */
 
-router.post('/login', userServices.loginUser)
+router.post('/login', LoginUserMiddleware, userServices.loginUser)
 
 /**
  * @swagger

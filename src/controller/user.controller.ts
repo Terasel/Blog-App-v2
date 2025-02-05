@@ -34,19 +34,10 @@ interface userFind {
 export const createUser: Handler = async (req, res) => {
     try {
         const user: userCreated = { email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role }
-        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        if (!user.email.match(validRegex)) throw 'Invalid email'
-        if (typeof user.name != 'string') throw 'Invalid name'
-        if (typeof user.password != 'string') throw 'Invalid password'
-        if (user.role != 'admin' && user.role != 'simpleUser') throw 'Invalid user role'
         const newUser = await userModel.createUser(user)
         if (!newUser) throw 'Not created'
         res.status(201).send(newUser)
     } catch (err) {
-        if (err == 'Invalid email') res.status(400).send('This email is invalid')
-        if (err == 'Invalid name') res.status(400).send('This user name is invalid')
-        if (err == 'Invalid password') res.status(400).send('This password is invalid')
-        if (err == 'Invalid user role') res.status(400).send('This user role is invalid')
         if (err == 'Not created') res.status(422).send('This user could not be created')
     }
 }
@@ -54,22 +45,15 @@ export const createUser: Handler = async (req, res) => {
 export const updateUser: Handler = async (req, res) => {
     try {
         const userC: userFind = { id: req.params.id }
-        if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
         const userU: userUpdate = { name: req.body.name, email: req.body.email }
-        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        if ((userU.email != '') && (!userU.email.match(validRegex))) throw 'Invalid email'
-        if ((typeof userU.name != 'string') && (userU.name != '')) throw 'Invalid name'
         const userUpdate = await userModel.updateUser(userC, userU)
         if (!userUpdate) throw 'Empty'
         res.status(200).send(userUpdate)
     } catch (err) {
-        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
-        if (err == 'Invalid email') res.status(400).send('This email is invalid')
-        if (err == 'Invalid name') res.status(400).send('This user name is invalid')
-        else if (err == 'Empty') res.status(400).send('This user could not be updated')
+        if (err == 'Empty') res.status(400).send('This user could not be updated')
     }
 }
 
@@ -86,7 +70,6 @@ export const getUsers: Handler = async (req, res) => {
 export const banUser: Handler = async (req, res) => {
     try {
         const userC: userFind = { id: req.params.id }
-        if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
         if (user.banned == true) throw 'Already banned'
@@ -94,7 +77,6 @@ export const banUser: Handler = async (req, res) => {
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Already banned') res.status(400).send('This user is already banned')
         if (err == 'Empty') res.status(400).send('This user could not be banned')
@@ -104,7 +86,6 @@ export const banUser: Handler = async (req, res) => {
 export const unbanUser: Handler = async (req, res) => {
     try {
         const userC: userFind = { id: req.params.id }
-        if (userC.id == null) throw 'No ID'
         const user = await userModel.getUser(userC)
         if (!user) throw 'No user'
         if (user.banned == false) throw 'Already unbanned'
@@ -112,7 +93,6 @@ export const unbanUser: Handler = async (req, res) => {
         if (!userBan) throw 'Empty'
         res.status(200).send(userBan)
     } catch (err) {
-        if (err == 'No ID') res.status(400).send('No ID is being sent')
         if (err == 'No user') res.status(404).send('This user could not be found')
         if (err == 'Already unbanned') res.status(400).send('This user is not banned')
         if (err == 'Empty') res.status(400).send('This user could not be unbanned')
@@ -122,9 +102,6 @@ export const unbanUser: Handler = async (req, res) => {
 export const loginUser: Handler = async (req, res) => {
     try {
         const userC: userTemplate = { id: req.body.id, email: req.body.email, name: req.body.name, password: req.body.password, role: req.body.role, banned: req.body.banned }
-        const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-        if (!userC.email.match(validRegex)) throw 'Invalid email'
-        if (typeof userC.password != 'string') throw 'Invalid password'
         const userLogin = await userModel.loginUser(userC)
         if (userLogin?.banned == true) throw 'Banned user'
         const isValid = await bcrypt.compare(req.body.password, userLogin!.password)
@@ -141,8 +118,6 @@ export const loginUser: Handler = async (req, res) => {
             .status(200)
             .json({ id: userLogin?.id })
     } catch (err) {
-        if (err == 'Invalid email') res.status(400).send('This email is invalid')
-        if (err == 'Invalid password') res.status(400).send('This password is invalid')
         if (err == 'Banned user') res.status(401).send('This user is currently banned')
         if (err == 'Invalid') res.status(400).send('The password is incorrect')
         if (err == 'No token') res.status(400).send('The token has not been created')
