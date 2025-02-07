@@ -30,8 +30,8 @@ POST http://localhost:3000/api/blog HTTP/1.1
 content-type: application/json
 
 {
-"title": "Hallellujah23",
-"content": "akngkjsebgesg23"
+"title": "Hallellujah234",
+"content": "akngkjsebgesg234"
 }
 
 ###
@@ -56,7 +56,7 @@ GET http://localhost:3000/api/blog/testing
 
 ###
 
-PUT http://localhost:3000/api/blog/1562 HTTP/1.1
+PUT http://localhost:3000/api/blog/232 HTTP/1.1
 content-type: application/json
 
 {
@@ -88,11 +88,11 @@ PATCH http://localhost:3000/api/blog/1563/recover
 
 ###
 
-PATCH http://localhost:3000/api/blog/1562/liked
+PATCH http://localhost:3000/api/blog/232/liked
 
 ###
 
-PATCH http://localhost:3000/api/blog/1562/disliked
+PATCH http://localhost:3000/api/blog/232/disliked
 
 ###
 
